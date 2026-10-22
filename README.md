@@ -32,13 +32,13 @@ Aplicación web progresiva (PWA) educativa para armónica diatónica Richter en 
 
 ## Alcance y próximos hitos
 
-Esta es una versión web progresiva en desarrollo, instalable desde un navegador compatible, no una APK Android nativa. La ruta formativa ya contiene 40 lecciones bilingües, pero el método completo sigue en construcción: el repertorio actual tiene 10 melodías, no 40 piezas terminadas. Los sonidos son tonos electrónicos de referencia, no grabaciones reales de armónica; todavía no incluye detección de notas por micrófono, cuentas de usuario ni sincronización en la nube.
+Esta es una versión web progresiva en desarrollo, instalable desde un navegador compatible, no una APK Android nativa. La ruta formativa ya contiene 40 lecciones bilingües, pero el método completo sigue en construcción: el repertorio de la app ya contiene 40 piezas de práctica (melodías tradicionales y estudios originales AKD); varias son fragmentos pedagógicos y requieren una revisión musical final antes de considerarse arreglos definitivos. Los sonidos son tonos electrónicos de referencia, no grabaciones reales de armónica; todavía no incluye detección de notas por micrófono, cuentas de usuario ni sincronización en la nube.
 
 Siguientes hitos de desarrollo:
 1. Validar tablaturas y melodías nota por nota.
 2. Profundizar cada lección con partituras/tablaturas verificadas y evaluación interactiva.
 3. Incorporar grabaciones reales y, más adelante, detección de notas por micrófono.
-4. Completar el repertorio progresivo de 40 piezas respetando derechos de autor.
+4. Revisar nota por nota las 40 piezas, validar su fidelidad musical y completar las tablaturas y duraciones.
 5. Empaquetar la experiencia para Android.
 
 ## Publicación
