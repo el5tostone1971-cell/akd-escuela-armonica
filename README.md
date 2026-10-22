@@ -23,6 +23,7 @@ Aplicación web progresiva (PWA) educativa para armónica diatónica Richter en 
 - [Capítulo 2: lectura musical y tablatura](libro-metodo-akd-capitulo-2.md)
 - [Capítulo 3: silencios, puntillos y articulación](libro-metodo-akd-capitulo-3.md)
 - [Capítulo 4: escalas, tonalidades y construcción de melodías](libro-metodo-akd-capitulo-4.md)
+- [Capítulo 5: control del aire y primeras notas alteradas](libro-metodo-akd-capitulo-5.md)
 
 ## Convención de tablatura
 
