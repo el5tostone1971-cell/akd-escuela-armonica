@@ -10,7 +10,7 @@ Aplicación web progresiva (PWA) educativa para armónica diatónica Richter en 
 
 ## Incluye actualmente
 
-- 10 lecciones iniciales: instrumento, tablatura, nota limpia, respiración, cambios de agujero, pulso, escala de Do, primera melodía, articulación y preparación conceptual para bending.
+- 40 lecciones en español y portugués distribuidas en cuatro etapas: fundamentos, desarrollo, técnicas intermedias y nivel avanzado. Las lecciones 11–40 incluyen explicación, práctica guiada y objetivo de aprendizaje.
 - Mapa de los 10 agujeros de una armónica Richter en Do.
 - Referencias sonoras sintetizadas con Web Audio para notas, escala y melodías cortas.
 - Control de velocidad de práctica (BPM).
@@ -32,12 +32,12 @@ Aplicación web progresiva (PWA) educativa para armónica diatónica Richter en 
 
 ## Alcance y próximos hitos
 
-Esta es una primera versión funcional de la aplicación web, no una APK Android nativa ni un curso completo. Los sonidos actuales son tonos electrónicos de referencia, no grabaciones reales de armónica; todavía no incluye detección de notas por micrófono, cuentas de usuario ni sincronización en la nube.
+Esta es una versión web progresiva en desarrollo, instalable desde un navegador compatible, no una APK Android nativa. La ruta formativa ya contiene 40 lecciones bilingües, pero el método completo sigue en construcción: el repertorio actual tiene 10 melodías, no 40 piezas terminadas. Los sonidos son tonos electrónicos de referencia, no grabaciones reales de armónica; todavía no incluye detección de notas por micrófono, cuentas de usuario ni sincronización en la nube.
 
 Siguientes hitos de desarrollo:
 1. Validar tablaturas y melodías nota por nota.
-2. Ampliar el método teórico y práctico por niveles, incluyendo bending, vibrato, ritmo e improvisación.
-3. Incorporar ejercicios guiados con evaluación y grabaciones de armónica.
+2. Profundizar cada lección con partituras/tablaturas verificadas y evaluación interactiva.
+3. Incorporar grabaciones reales y, más adelante, detección de notas por micrófono.
 4. Completar el repertorio progresivo de 40 piezas respetando derechos de autor.
 5. Empaquetar la experiencia para Android.
 
