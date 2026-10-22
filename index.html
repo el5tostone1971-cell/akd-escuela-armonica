@@ -246,12 +246,23 @@ let micStream=null,micContext=null,micAnalyser=null,micFrame=0;
 const micFreq={C:261.63,D:293.66,E:329.63,F:349.23,G:392,A:440,B:493.88};
 const micTab={C:"4↓ soplar",D:"4↑ aspirar",E:"5↓ soplar",F:"5↑ aspirar",G:"6↓ soplar",A:"6↑ aspirar",B:"7↑ aspirar"};
 function detectPitch(buf,sr){
- let rms=0;for(let i=0;i<buf.length;i++)rms+=buf[i]*buf[i];rms=Math.sqrt(rms/buf.length);if(rms<.012)return null;
- let bestLag=-1,best=-1;
- const minLag=Math.floor(sr/520),maxLag=Math.min(Math.floor(sr/220),buf.length-2);
- for(let lag=minLag;lag<=maxLag;lag++){let corr=0,n=buf.length-lag;for(let i=0;i<n;i++)corr+=buf[i]*buf[i+lag];corr/=n;if(corr>best){best=corr;bestLag=lag}}
- if(bestLag<0||best<.35)return null;
- const freq=sr/bestLag;if(freq<220||freq>520)return null;return freq
+ const n=buf.length;let mean=0;for(let i=0;i<n;i++)mean+=buf[i];mean/=n;
+ let rms=0;for(let i=0;i<n;i++){const v=buf[i]-mean;rms+=v*v}rms=Math.sqrt(rms/n);if(rms<.0035)return null;
+ const minLag=Math.max(2,Math.floor(sr/520)),maxLag=Math.min(Math.floor(sr/220),n-2),corrs=new Float32Array(maxLag+2);
+ for(let lag=minLag;lag<=maxLag;lag++){
+  let cross=0,e1=0,e2=0,lim=n-lag;
+  for(let i=0;i<lim;i++){const a=buf[i]-mean,b=buf[i+lag]-mean;cross+=a*b;e1+=a*a;e2+=b*b}
+  corrs[lag]=(e1&&e2)?cross/Math.sqrt(e1*e2):0;
+ }
+ let bestLag=-1,best=.52;
+ for(let lag=minLag+1;lag<maxLag;lag++){
+  if(corrs[lag]>best&&corrs[lag]>=corrs[lag-1]&&corrs[lag]>=corrs[lag+1]){best=corrs[lag];bestLag=lag;break}
+ }
+ if(bestLag<0)return null;
+ const y0=corrs[bestLag-1],y1=corrs[bestLag],y2=corrs[bestLag+1],den=y0-2*y1+y2;
+ const shift=Math.abs(den)>1e-9?.5*(y0-y2)/den:0;
+ const freq=sr/(bestLag+Math.max(-.5,Math.min(.5,shift)));
+ return freq>=220&&freq<=520?freq:null
 }
 function micLoop(){
  if(!micAnalyser)return;
