@@ -1,0 +1,11 @@
+{
+  "name": "Escuela de Armónica AKD impresiones",
+  "short_name": "Armónica AKD",
+  "description": "Aprendizaje progresivo de armónica diatónica en Do.",
+  "lang": "es",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f5f2e9",
+  "theme_color": "#183432"
+}
