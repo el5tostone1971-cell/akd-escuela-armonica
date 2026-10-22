@@ -221,12 +221,12 @@ function synthTone(freq,duration=.45,delay=0){
 function tone(freq,duration=.45,delay=0){
  if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();
  if(audioCtx.state==="suspended")audioCtx.resume();
- const midi=69+12*Math.log2(freq/440);
+ const midi=69+12*Math.log2(freq/440),startAt=audioCtx.currentTime+delay;
  ensureHarmonicaSamples().then(loaded=>{
   if(!loaded){synthTone(freq,duration,delay);return}
   let nearest=0;for(let i=1;i<harmonicaSampleMidi.length;i++)if(Math.abs(harmonicaSampleMidi[i]-midi)<Math.abs(harmonicaSampleMidi[nearest]-midi))nearest=i;
   const buffer=harmonicaSamples[nearest];if(!buffer){synthTone(freq,duration,delay);return}
-  const source=audioCtx.createBufferSource(),gain=audioCtx.createGain(),t=audioCtx.currentTime+delay;
+  const source=audioCtx.createBufferSource(),gain=audioCtx.createGain(),t=startAt;
   source.buffer=buffer;source.playbackRate.setValueAtTime(Math.pow(2,(midi-harmonicaSampleMidi[nearest])/12),t);
   gain.gain.setValueAtTime(.0001,t);gain.gain.linearRampToValueAtTime(.72,t+.018);gain.gain.setValueAtTime(.72,t+Math.max(.025,duration-.065));gain.gain.linearRampToValueAtTime(.0001,t+duration);
   source.connect(gain);gain.connect(audioCtx.destination);source.start(t,0,Math.min(buffer.duration,Math.max(.08,duration)));source.stop(t+duration+.015);oscillators.push(source)
