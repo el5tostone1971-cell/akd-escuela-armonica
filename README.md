@@ -18,6 +18,12 @@ Aplicación web progresiva (PWA) educativa para armónica diatónica Richter en 
 - Interfaz adaptable a pantallas móviles y selector español/portugués.
 - Manifiesto PWA y service worker para caché básica.
 
+## Libro de método AKD
+
+- [Capítulo 2: lectura musical y tablatura](libro-metodo-akd-capitulo-2.md)
+- [Capítulo 3: silencios, puntillos y articulación](libro-metodo-akd-capitulo-3.md)
+- [Capítulo 4: escalas, tonalidades y construcción de melodías](libro-metodo-akd-capitulo-4.md)
+
 ## Convención de tablatura
 
 - `4 ↓`: soplar por el agujero 4.
