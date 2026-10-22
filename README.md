@@ -15,6 +15,7 @@ Aplicación web progresiva (PWA) educativa para armónica diatónica Richter en 
 - Referencias sonoras sintetizadas con Web Audio para notas, escala y melodías cortas.
 - Control de velocidad de práctica (BPM).
 - Registro local de lecciones y rutina diaria.
+- Autoevaluación interactiva de dos preguntas por lección, con corrección inmediata en español y portugués; las preguntas varían según la etapa formativa.
 - Interfaz adaptable a pantallas móviles y selector español/portugués.
 - Manifiesto PWA y service worker para caché básica.
 
