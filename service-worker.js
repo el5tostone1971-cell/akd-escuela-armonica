@@ -1,4 +1,4 @@
-const CACHE = "akd-armonica-v19";
+const CACHE = "akd-armonica-v20";
 const FILES = ["./", "./index.html", "./manifest.webmanifest"];
 self.addEventListener("install", event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(FILES)));
