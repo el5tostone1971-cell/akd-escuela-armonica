@@ -403,9 +403,9 @@ function detectPitch(buf,sr){
   for(let i=0;i<lim;i++){const a=buf[i]-mean,b=buf[i+lag]-mean;cross+=a*b;e1+=a*a;e2+=b*b}
   corrs[lag]=(e1&&e2)?cross/Math.sqrt(e1*e2):0;
  }
- let bestLag=-1,best=.52;
+ let bestLag=-1,best=.60;
  for(let lag=minLag+1;lag<maxLag;lag++){
-  if(corrs[lag]>best&&corrs[lag]>=corrs[lag-1]&&corrs[lag]>=corrs[lag+1]){best=corrs[lag];bestLag=lag;break}
+  if(corrs[lag]>best&&corrs[lag]>=corrs[lag-1]&&corrs[lag]>=corrs[lag+1]){best=corrs[lag];bestLag=lag}
  }
  if(bestLag<0)return null;
  const y0=corrs[bestLag-1],y1=corrs[bestLag],y2=corrs[bestLag+1],den=y0-2*y1+y2;
@@ -413,21 +413,25 @@ function detectPitch(buf,sr){
  const freq=sr/(bestLag+Math.max(-.5,Math.min(.5,shift)));
  return freq>=220&&freq<=520?freq:null
 }
+let micPitchHistory=[];
 function micLoop(){
  if(!micAnalyser)return;
  const data=new Float32Array(micAnalyser.fftSize);micAnalyser.getFloatTimeDomainData(data);
- const hz=detectPitch(data,micContext.sampleRate),target=$("micTarget").value,expected=micFreq[target];
- if(hz){
+ const rawHz=detectPitch(data,micContext.sampleRate),target=$("micTarget").value,expected=micFreq[target];
+ if(rawHz){
+  micPitchHistory.push(rawHz);if(micPitchHistory.length>5)micPitchHistory.shift();
+  const sorted=[...micPitchHistory].sort((a,b)=>a-b),hz=sorted[Math.floor(sorted.length/2)];
   const midi=69+12*Math.log2(hz/440),targetMidi=69+12*Math.log2(expected/440),cents=Math.round((midi-targetMidi)*100),nearest=Math.round(midi),names=["Do","Do♯","Re","Mi♭","Mi","Fa","Fa♯","Sol","Sol♯","La","Si♭","Si"],note=names[(nearest%12+12)%12],octave=Math.floor(nearest/12)-1;
-  const ok=Math.abs(cents)<=35;
-  $("micResult").textContent=(lang==="pt"?"Detectado: ":"Detectado: ")+note+" "+octave+" · "+Math.round(hz)+" Hz · "+(cents>0?"+":"")+cents+" cents. "+(ok?(lang==="pt"?"Muito bem: a nota está afinada!":"¡Muy bien: la nota está afinada!"):(lang==="pt"?"Ajuste o sopro ou a aspiração para chegar à nota objetivo.":"Ajustá el soplo o la aspiración para acercarte a la nota objetivo."))+" Objetivo: "+target+" ("+micTab[target]+").";
-  $("micResult").className=ok?"success":"muted";
- }else{$("micResult").textContent=lang==="pt"?"Escutando… toque uma nota contínua e clara.":"Escuchando… tocá una nota continua y clara."; $("micResult").className="muted"}
+  const ok=Math.abs(cents)<=35,stable=micPitchHistory.length>=3;
+  const message=ok?(lang==="pt"?"Muito bem: a nota está afinada!":"¡Muy bien: la nota está afinada!"):(lang==="pt"?"Ajuste o sopro ou a aspiração para chegar à nota objetivo.":"Ajustá el soplo o la aspiración para acercarte a la nota objetivo.");
+  $("micResult").textContent=(lang==="pt"?"Detectado: ":"Detectado: ")+note+" "+octave+" · "+Math.round(hz)+" Hz · "+(cents>0?"+":"")+cents+" cents. "+(stable?message:(lang==="pt"?"Estabilizando leitura…":"Estabilizando lectura…"))+" Objetivo: "+target+" ("+micTab[target]+").";
+  $("micResult").className=stable&&ok?"success":"muted";
+ }else{micPitchHistory=[];$("micResult").textContent=lang==="pt"?"Escutando… toque uma nota contínua e clara.":"Escuchando… tocá una nota continua y clara."; $("micResult").className="muted"}
  micFrame=requestAnimationFrame(micLoop)
 }
 $("micStart").onclick=async()=>{
  try{
-  micStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}});
+  micPitchHistory=[];micStream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}});
   micContext=new(window.AudioContext||window.webkitAudioContext)();await micContext.resume();
   micAnalyser=micContext.createAnalyser();micAnalyser.fftSize=4096;micAnalyser.smoothingTimeConstant=0;
   micContext.createMediaStreamSource(micStream).connect(micAnalyser);
@@ -437,7 +441,7 @@ $("micStart").onclick=async()=>{
  }catch(e){$("micResult").textContent=lang==="pt"?"Não foi possível ativar o microfone. Confira a permissão do navegador e use HTTPS.":"No se pudo activar el micrófono. Revisá el permiso del navegador y usá HTTPS."}
 };
 $("micStop").onclick=()=>{
- if(micFrame)cancelAnimationFrame(micFrame);micFrame=0;micAnalyser=null;
+ if(micFrame)cancelAnimationFrame(micFrame);micFrame=0;micAnalyser=null;micPitchHistory=[];
  if(micStream)micStream.getTracks().forEach(t=>t.stop());micStream=null;
  if(micContext){micContext.close();micContext=null}
  $("micStart").disabled=false;$("micStop").disabled=true;
