@@ -20,6 +20,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Verify Portuguese lessons 11–40
+        run: node tests/check-portuguese-lessons.mjs
       - name: Configure Pages
         uses: actions/configure-pages@v5
         with:
