@@ -35,8 +35,8 @@ for (const [index, lesson] of appended.entries()) {
 
 assert.match(html, /const arr=lang==="pt"\?ptLessons:lessons/, "La lista de lecciones no selecciona el idioma portugués");
 assert.match(html, /\$\("lang"\)\.onchange=[\s\S]*?renderLessons\(\)/, "Cambiar idioma no vuelve a dibujar la lista de lecciones");
-assert.match(html, /function showLesson\\(i\\)\\{currentLessonIndex=i;const l=\\(lang==="pt"\\?ptLessons:lessons\\)\\[i\\]/, "La pantalla de detalle no carga las lecciones en portugués");
-assert.match(html, /const lessonChecksPt=\\[/, "Falta el banco de preguntas en portugués");
-assert.match(html, /const pool=\\(lang==="pt"\\?lessonChecksPt:lessonChecks\\)/, "El cuestionario no selecciona las preguntas según el idioma");
+assert.match(html, /function showLesson\(i\)\{currentLessonIndex=i;const l=\(lang==="pt"\?ptLessons:lessons\)\[i\]/, "La pantalla de detalle no carga las lecciones en portugués");
+assert.match(html, /const lessonChecksPt=\[/, "Falta el banco de preguntas en portugués");
+assert.match(html, /const pool=\(lang==="pt"\?lessonChecksPt:lessonChecks\)/, "El cuestionario no selecciona las preguntas según el idioma");
 
 console.log("OK: 40 lecciones en portugués; las lecciones 11–40 tienen cinco campos completos; el selector y el detalle usan ptLessons.");
