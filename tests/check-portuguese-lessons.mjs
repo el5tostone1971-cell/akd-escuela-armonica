@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 
 const html = fs.readFileSync("index.html", "utf8");
 
-const inlineScripts = [...html.matchAll(/<script>([\\s\\S]*?)<\\/script>/g)];
+const inlineScripts = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)];
 assert.ok(inlineScripts.length >= 1, "No se encontró el JavaScript de la aplicación");
 assert.doesNotThrow(() => new vm.Script(inlineScripts[0][1]), "El JavaScript de la aplicación debe ser sintácticamente válido");
 
