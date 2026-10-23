@@ -225,7 +225,7 @@ function translateStatic(pt){
  $("metroStop").textContent=pt?"■ Parar":"■ Parar";
  document.querySelectorAll("[data-song]").forEach(b=>b.textContent=pt?"Ouvir referência":"Escuchar referencia");
 }
-let lang="es",audioCtx=null,oscillators=[];const $=id=>document.getElementById(id);function loadDone(){try{return JSON.parse(localStorage.getItem("akdDone")||"[]")}catch{return[]}}
+let lang="es",rhythmAudioCtx=null,oscillators=[];const $=id=>document.getElementById(id);function loadDone(){try{return JSON.parse(localStorage.getItem("akdDone")||"[]")}catch{return[]}}
 function renderLessons(){const arr=lang==="pt"?ptLessons:lessons,done=loadDone();const stages=lang==="pt"?["Nível 1 · Fundamentos","Nível 2 · Desenvolvimento","Nível 3 · Técnicas intermediárias","Nível 4 · Avançado","Nível 5 · Leitura e criação musical","Nível 6 · Técnicas expressivas","Nível 7 · Blues e improvisação"]:["Nivel 1 · Fundamentos","Nivel 2 · Desarrollo","Nivel 3 · Técnicas intermedias","Nivel 4 · Avanzado","Nivel 5 · Lectura y creación musical","Nivel 6 · Técnicas expresivas","Nivel 7 · Blues e improvisación"];let html="";arr.forEach((l,i)=>{if(i%10===0)html+='<h3 class="levelHeading">'+stages[Math.floor(i/10)]+'</h3>';html+='<div class="lesson"><div><b>'+(i+1)+". "+l[0]+'</b><br><span class="muted">'+(done.includes(i)?"✓ "+(lang==="pt"?"Concluída":"Completada"):(lang==="pt"?"Aula":"Lección")+" "+(i+1))+'</span></div><button type="button" data-lesson="'+i+'" onclick="showLesson('+i+')">'+(lang==="pt"?"Abrir":"Abrir")+"</button></div>";});$("lessonList").innerHTML=html}
 const lessonChecks=[
  [
@@ -351,34 +351,34 @@ const harmonicaSampleUrls=[
 const harmonicaSampleMidi=[64,67,72,76,79,84,88],harmonicaSamples=[];
 let harmonicaSampleLoad=null;
 function stopAudio(){oscillators.forEach(o=>{try{o.stop()}catch{}});oscillators=[]}
-function getHarmonicaWave(){if(harmonicaWave)return harmonicaWave;const real=new Float32Array(16),imag=new Float32Array(16);for(let n=1;n<real.length;n++){const weight=1/Math.pow(n,.82);real[n]=weight*(n%2===0?.82:1);imag[n]=n%3===0?weight*.08:0}harmonicaWave=audioCtx.createPeriodicWave(real,imag,{disableNormalization:false});return harmonicaWave}
+function getHarmonicaWave(){if(harmonicaWave)return harmonicaWave;const real=new Float32Array(16),imag=new Float32Array(16);for(let n=1;n<real.length;n++){const weight=1/Math.pow(n,.82);real[n]=weight*(n%2===0?.82:1);imag[n]=n%3===0?weight*.08:0}harmonicaWave=rhythmAudioCtx.createPeriodicWave(real,imag,{disableNormalization:false});return harmonicaWave}
 function ensureHarmonicaSamples(){
  if(harmonicaSampleLoad)return harmonicaSampleLoad;
  harmonicaSampleLoad=Promise.all(harmonicaSampleUrls.map(async url=>{
-  try{const response=await fetch(url);if(!response.ok)throw new Error("sample unavailable");return await audioCtx.decodeAudioData(await response.arrayBuffer())}
+  try{const response=await fetch(url);if(!response.ok)throw new Error("sample unavailable");return await rhythmAudioCtx.decodeAudioData(await response.arrayBuffer())}
   catch(e){return null}
  })).then(buffers=>{buffers.forEach((b,i)=>harmonicaSamples[i]=b);return buffers.some(Boolean)});
  return harmonicaSampleLoad
 }
 function synthTone(freq,duration=.45,delay=0){
- const t=audioCtx.currentTime+delay,o=audioCtx.createOscillator(),reed=audioCtx.createOscillator(),g=audioCtx.createGain(),reedGain=audioCtx.createGain(),vib=audioCtx.createOscillator(),vibDepth=audioCtx.createGain();
+ const t=rhythmAudioCtx.currentTime+delay,o=rhythmAudioCtx.createOscillator(),reed=rhythmAudioCtx.createOscillator(),g=rhythmAudioCtx.createGain(),reedGain=rhythmAudioCtx.createGain(),vib=rhythmAudioCtx.createOscillator(),vibDepth=rhythmAudioCtx.createGain();
  o.setPeriodicWave(getHarmonicaWave());o.frequency.setValueAtTime(freq,t);reed.type="sine";reed.frequency.setValueAtTime(freq*1.003,t);vib.type="sine";vib.frequency.value=5.2;vibDepth.gain.value=freq*.0022;vib.connect(vibDepth);vibDepth.connect(o.frequency);
  g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.13,t+.012);g.gain.setValueAtTime(.13,t+Math.max(.025,duration-.075));g.gain.exponentialRampToValueAtTime(.0001,t+duration);
  reedGain.gain.setValueAtTime(.0001,t);reedGain.gain.exponentialRampToValueAtTime(.022,t+.018);reedGain.gain.setValueAtTime(.022,t+Math.max(.025,duration-.075));reedGain.gain.exponentialRampToValueAtTime(.0001,t+duration);
- o.connect(g);reed.connect(reedGain);g.connect(audioCtx.destination);reedGain.connect(audioCtx.destination);o.start(t);reed.start(t);vib.start(t);o.stop(t+duration+.02);reed.stop(t+duration+.02);vib.stop(t+duration+.02);oscillators.push(o,reed,vib)
+ o.connect(g);reed.connect(reedGain);g.connect(rhythmAudioCtx.destination);reedGain.connect(rhythmAudioCtx.destination);o.start(t);reed.start(t);vib.start(t);o.stop(t+duration+.02);reed.stop(t+duration+.02);vib.stop(t+duration+.02);oscillators.push(o,reed,vib)
 }
 function tone(freq,duration=.45,delay=0){
- if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();
- if(audioCtx.state==="suspended")audioCtx.resume();
- const midi=69+12*Math.log2(freq/440),startAt=audioCtx.currentTime+delay;
+ if(!rhythmAudioCtx)rhythmAudioCtx=new(window.AudioContext||window.webkitAudioContext)();
+ if(rhythmAudioCtx.state==="suspended")rhythmAudioCtx.resume();
+ const midi=69+12*Math.log2(freq/440),startAt=rhythmAudioCtx.currentTime+delay;
  ensureHarmonicaSamples().then(loaded=>{
   if(!loaded){synthTone(freq,duration,delay);return}
   let nearest=0;for(let i=1;i<harmonicaSampleMidi.length;i++)if(Math.abs(harmonicaSampleMidi[i]-midi)<Math.abs(harmonicaSampleMidi[nearest]-midi))nearest=i;
   const buffer=harmonicaSamples[nearest];if(!buffer){synthTone(freq,duration,delay);return}
-  const source=audioCtx.createBufferSource(),gain=audioCtx.createGain(),t=startAt;
+  const source=rhythmAudioCtx.createBufferSource(),gain=rhythmAudioCtx.createGain(),t=startAt;
   source.buffer=buffer;source.playbackRate.setValueAtTime(Math.pow(2,(midi-harmonicaSampleMidi[nearest])/12),t);
   gain.gain.setValueAtTime(.0001,t);gain.gain.linearRampToValueAtTime(.72,t+.018);gain.gain.setValueAtTime(.72,t+Math.max(.025,duration-.065));gain.gain.linearRampToValueAtTime(.0001,t+duration);
-  source.connect(gain);gain.connect(audioCtx.destination);source.start(t,0,Math.min(buffer.duration,Math.max(.08,duration)));source.stop(t+duration+.015);oscillators.push(source)
+  source.connect(gain);gain.connect(rhythmAudioCtx.destination);source.start(t,0,Math.min(buffer.duration,Math.max(.08,duration)));source.stop(t+duration+.015);oscillators.push(source)
  }).catch(()=>synthTone(freq,duration,delay))
 }
 function sequence(a,d=.42){stopAudio();let delay=0;for(let i=0;i<a.length;i++){tone(a[i],d,delay);delay+=d+.16}}
@@ -388,7 +388,7 @@ function attachSongLearning(card,notes,pt=false){const tabs=card.querySelector("
 function renderExtraSongs(){const grid=document.querySelector("#songs .grid");if(!grid)return;grid.querySelectorAll("[data-extra-song]").forEach(el=>el.remove());extraSongs.forEach((s,i)=>{const pt=lang==="pt",level=i<10?2:i<20?3:4;const card=document.createElement("article");card.className="card";card.dataset.extraSong="true";const badge=document.createElement("span");badge.className="pill";badge.textContent=(i+11)+" · "+(pt?"Nível ":"Nivel ")+level;const h=document.createElement("h2");h.textContent=pt?s[1]:s[0];const p=document.createElement("p");p.className="muted";p.textContent=pt?s[3]:s[2];const tabs=document.createElement("div");tabs.className="tabs";tabs.textContent=s[4].map(n=>tabMap[n]).join(" · ");card.append(badge,h,p,tabs);grid.append(card);attachSongLearning(card,s[4],pt)});}
 document.querySelectorAll("[data-song]").forEach(b=>{const key=b.dataset.song,card=b.closest(".card");if(songNotes[key]){card.dataset.songKey=key;attachSongLearning(card,songNotes[key],lang==="pt")}b.remove()});renderExtraSongs();$("routine").onclick=()=>{localStorage.setItem("akdRoutine",new Date().toLocaleDateString());$("routineStatus").textContent=lang==="pt"?"Rotina registrada hoje.":"Rutina registrada por hoy."};if(localStorage.getItem("akdRoutine")===new Date().toLocaleDateString())$("routineStatus").textContent=lang==="pt"?"✓ Rotina de hoje registrada.":"✓ Rutina de hoy registrada.";const holes=[["C","D"],["E","G"],["G","B"],["C","D"],["E","F"],["G","A"],["C","B"],["E","D"],["G","F"],["C","A"]];
 function renderHoleMap(){const pt=lang==="pt",names=pt?{C:"Dó",D:"Ré",E:"Mi",F:"Fá",G:"Sol",A:"Lá",B:"Si"}:{C:"Do",D:"Re",E:"Mi",F:"Fa",G:"Sol",A:"La",B:"Si"};$("holes").innerHTML=holes.map((h,i)=>'<div class="hole" aria-label="'+(pt?"Furo ":"Agujero ")+(i+1)+'"><b>'+(i+1)+'</b><span>↓ '+h[0]+' · '+names[h[0]]+'</span><br><span>↑ '+h[1]+' · '+names[h[1]]+'</span></div>').join("");}
-renderHoleMap();const noteQuiz=[["Do (C)","4↓"],["Re (D)","4↑"],["Mi (E)","5↓"],["Fa (F)","5↑"],["Sol (G)","6↓"],["La (A)","6↑"],["Si (B)","7↑"]];let currentQuiz=0;function newQuiz(){currentQuiz=Math.floor(Math.random()*noteQuiz.length);$("quizNote").textContent=lang==="pt"?({"Do (C)":"Dó (C)","Re (D)":"Ré (D)","La (A)":"Lá (A)"}[noteQuiz[currentQuiz][0]]||noteQuiz[currentQuiz][0]):noteQuiz[currentQuiz][0];$("quizFeedback").textContent=lang==="pt"?"Escolha a tablatura correspondente.":"Elegí la tablatura que corresponde a la nota.";document.querySelectorAll("[data-answer]").forEach(b=>b.disabled=false)}$("nextQuiz").onclick=newQuiz;document.querySelectorAll("[data-answer]").forEach(b=>b.onclick=()=>{const ok=b.dataset.answer===noteQuiz[currentQuiz][1];$("quizFeedback").textContent=ok?(lang==="pt"?"Correto! Muito bem.":"¡Correcto! Muy bien."):(lang==="pt"?"Ainda não. A resposta correta é "+noteQuiz[currentQuiz][1]+".":"Todavía no. La respuesta correcta es "+noteQuiz[currentQuiz][1]+".");if(ok)document.querySelectorAll("[data-answer]").forEach(x=>x.disabled=true)});newQuiz();let metroTimer=null,metroBeat=0;function metroTick(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();const t=audioCtx.currentTime,o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type="sine";o.frequency.value=metroBeat%4===0?1200:800;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.12,t+.005);g.gain.exponentialRampToValueAtTime(.0001,t+.055);o.connect(g);g.connect(audioCtx.destination);o.start(t);o.stop(t+.06);metroBeat++}$("metroTempo").oninput=e=>$("metroValue").textContent=e.target.value;$("metroStart").onclick=()=>{if(metroTimer)clearInterval(metroTimer);if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();metroBeat=0;metroTick();metroTimer=setInterval(metroTick,60000/(+$("metroTempo").value));$("metroStatus").textContent=lang==="pt"?"Metrônomo ativo.":"Metrónomo activo."};$("metroStop").onclick=()=>{if(metroTimer)clearInterval(metroTimer);metroTimer=null;$("metroStatus").textContent=lang==="pt"?"Metrônomo parado.":"Metrónomo detenido."};
+renderHoleMap();const noteQuiz=[["Do (C)","4↓"],["Re (D)","4↑"],["Mi (E)","5↓"],["Fa (F)","5↑"],["Sol (G)","6↓"],["La (A)","6↑"],["Si (B)","7↑"]];let currentQuiz=0;function newQuiz(){currentQuiz=Math.floor(Math.random()*noteQuiz.length);$("quizNote").textContent=lang==="pt"?({"Do (C)":"Dó (C)","Re (D)":"Ré (D)","La (A)":"Lá (A)"}[noteQuiz[currentQuiz][0]]||noteQuiz[currentQuiz][0]):noteQuiz[currentQuiz][0];$("quizFeedback").textContent=lang==="pt"?"Escolha a tablatura correspondente.":"Elegí la tablatura que corresponde a la nota.";document.querySelectorAll("[data-answer]").forEach(b=>b.disabled=false)}$("nextQuiz").onclick=newQuiz;document.querySelectorAll("[data-answer]").forEach(b=>b.onclick=()=>{const ok=b.dataset.answer===noteQuiz[currentQuiz][1];$("quizFeedback").textContent=ok?(lang==="pt"?"Correto! Muito bem.":"¡Correcto! Muy bien."):(lang==="pt"?"Ainda não. A resposta correta é "+noteQuiz[currentQuiz][1]+".":"Todavía no. La respuesta correcta es "+noteQuiz[currentQuiz][1]+".");if(ok)document.querySelectorAll("[data-answer]").forEach(x=>x.disabled=true)});newQuiz();let metroTimer=null,metroBeat=0;function metroTick(){if(!rhythmAudioCtx)rhythmAudioCtx=new(window.AudioContext||window.webkitAudioContext)();const t=rhythmAudioCtx.currentTime,o=rhythmAudioCtx.createOscillator(),g=rhythmAudioCtx.createGain();o.type="sine";o.frequency.value=metroBeat%4===0?1200:800;g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.12,t+.005);g.gain.exponentialRampToValueAtTime(.0001,t+.055);o.connect(g);g.connect(rhythmAudioCtx.destination);o.start(t);o.stop(t+.06);metroBeat++}$("metroTempo").oninput=e=>$("metroValue").textContent=e.target.value;$("metroStart").onclick=()=>{if(metroTimer)clearInterval(metroTimer);if(!rhythmAudioCtx)rhythmAudioCtx=new(window.AudioContext||window.webkitAudioContext)();metroBeat=0;metroTick();metroTimer=setInterval(metroTick,60000/(+$("metroTempo").value));$("metroStatus").textContent=lang==="pt"?"Metrônomo ativo.":"Metrónomo activo."};$("metroStop").onclick=()=>{if(metroTimer)clearInterval(metroTimer);metroTimer=null;$("metroStatus").textContent=lang==="pt"?"Metrônomo parado.":"Metrónomo detenido."};
 // Entrenador de altura mediante micrófono
 let micStream=null,micContext=null,micAnalyser=null,micFrame=0;
 const micFreq={C:261.63,D:293.66,E:329.63,F:349.23,G:392,A:440,B:493.88};
@@ -483,8 +483,8 @@ const earPatterns=[
  {hits:[0,2],es:"Notas en los pulsos 1 y 3",pt:"Notas nos tempos 1 e 3"},
  {hits:[0,1,3],es:"Notas en 1, 2 y 4; silencio en 3",pt:"Notas em 1, 2 e 4; pausa no 3"}
 ];
-let earIndex=1,earAnswer=null,audioCtx=null,harmTimer=null,harmBeat=0;
-function audioReady(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();if(audioCtx.state==="suspended")audioCtx.resume();return audioCtx}
+let earIndex=1,earAnswer=null,rhythmAudioCtx=null,harmTimer=null,harmBeat=0;
+function audioReady(){if(!rhythmAudioCtx)rhythmAudioCtx=new(window.AudioContext||window.webkitAudioContext)();if(rhythmAudioCtx.state==="suspended")rhythmAudioCtx.resume();return rhythmAudioCtx}
 function toneAt(time,freq,duration,volume){
  const c=audioReady(),o=c.createOscillator(),g=c.createGain();o.type="sine";o.frequency.value=freq;g.gain.setValueAtTime(.0001,time);g.gain.exponentialRampToValueAtTime(volume,time+.008);g.gain.exponentialRampToValueAtTime(.0001,time+duration);o.connect(g);g.connect(c.destination);o.start(time);o.stop(time+duration+.02)
 }
