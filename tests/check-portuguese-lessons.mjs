@@ -79,6 +79,8 @@ assert.match(html, /Math\.floor\(i\/10\)/, "El listado debe agrupar cada diez le
 
 assert.match(html, /de 70 lecciones completadas/, "El progreso debe reflejar las 70 lecciones");
 
+assert.match(html, /let micPitchHistory=\[\]/, "El afinador debe estabilizar varias lecturas del micrófono");
+assert.match(html, /if\(corrs\[lag\]>best&&corrs\[lag\]>=corrs\[lag-1\]&&corrs\[lag\]>=corrs\[lag\+1\]\)\{best=corrs\[lag\];bestLag=lag\}/, "El detector debe elegir el pico de correlación más fuerte");
 assert.match(html, /id="rhythmPerformance"/, "Falta la evaluación de precisión rítmica");
 assert.match(html, /id="perfStart"/, "Falta iniciar la evaluación rítmica");
 assert.match(html, /id="perfTap"/, "Falta el control de golpes para medir el pulso");
