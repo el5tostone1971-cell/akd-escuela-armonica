@@ -483,8 +483,8 @@ const earPatterns=[
  {hits:[0,2],es:"Notas en los pulsos 1 y 3",pt:"Notas nos tempos 1 e 3"},
  {hits:[0,1,3],es:"Notas en 1, 2 y 4; silencio en 3",pt:"Notas em 1, 2 e 4; pausa no 3"}
 ];
-let earIndex=1,earAnswer=null,rhythmAudioCtx=null,harmTimer=null,harmBeat=0;
-function audioReady(){if(!rhythmAudioCtx)rhythmAudioCtx=new(window.AudioContext||window.webkitAudioContext)();if(rhythmAudioCtx.state==="suspended")rhythmAudioCtx.resume();return rhythmAudioCtx}
+let earIndex=1,earAnswer=null,earAudioContext=null,harmTimer=null,harmBeat=0;
+function audioReady(){if(!earAudioContext)earAudioContext=new(window.AudioContext||window.webkitAudioContext)();if(earAudioContext.state==="suspended")earAudioContext.resume();return earAudioContext}
 function toneAt(time,freq,duration,volume){
  const c=audioReady(),o=c.createOscillator(),g=c.createGain();o.type="sine";o.frequency.value=freq;g.gain.setValueAtTime(.0001,time);g.gain.exponentialRampToValueAtTime(volume,time+.008);g.gain.exponentialRampToValueAtTime(.0001,time+duration);o.connect(g);g.connect(c.destination);o.start(time);o.stop(time+duration+.02)
 }
