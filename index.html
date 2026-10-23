@@ -181,6 +181,18 @@ function translateStatic(pt){
 }
 let lang="es",audioCtx=null,oscillators=[];const $=id=>document.getElementById(id);function loadDone(){try{return JSON.parse(localStorage.getItem("akdDone")||"[]")}catch{return[]}}
 function renderLessons(){const arr=lang==="pt"?ptLessons:lessons,done=loadDone();const stages=lang==="pt"?["Nível 1 · Fundamentos","Nível 2 · Desenvolvimento","Nível 3 · Técnicas intermediárias","Nível 4 · Avançado"]:["Nivel 1 · Fundamentos","Nivel 2 · Desarrollo","Nivel 3 · Técnicas intermedias","Nivel 4 · Avanzado"];let html="";arr.forEach((l,i)=>{if(i%10===0)html+='<h3 class="levelHeading">'+stages[Math.floor(i/10)]+'</h3>';html+='<div class="lesson"><div><b>'+(i+1)+". "+l[0]+'</b><br><span class="muted">'+(done.includes(i)?"✓ "+(lang==="pt"?"Concluída":"Completada"):(lang==="pt"?"Aula":"Lección")+" "+(i+1))+'</span></div><button type="button" data-lesson="'+i+'" onclick="showLesson('+i+')">'+(lang==="pt"?"Abrir":"Abrir")+"</button></div>";});$("lessonList").innerHTML=html}
+const lessonChecks=[
+ [{q:"¿Qué indica la flecha hacia abajo (↓)?",options:["Soplar","Aspirar"],ok:0},{q:"¿Qué conviene priorizar al empezar?",options:["Tocar rápido","Sonido limpio y aire suave"],ok:1}],
+ [{q:"¿Cuántos pulsos tiene un compás de 4/4?",options:["Dos","Cuatro"],ok:1},{q:"¿Qué dura una blanca en el ejemplo básico?",options:["Dos pulsos","Cuatro pulsos"],ok:0}],
+ [{q:"¿Qué notas forman la escala de Do mayor?",options:["Do–Re–Mi–Fa–Sol–La–Si","Do–Mi–Fa♯–Sol–Si"],ok:0},{q:"¿Qué ayuda a mantener el ritmo?",options:["Acelerar cada frase","Contar el pulso de forma constante"],ok:1}],
+ [{q:"¿Cómo se inicia el aprendizaje de técnicas avanzadas?",options:["Forzando el aire","Con notas limpias y controladas"],ok:1},{q:"¿Qué indica la tablatura?",options:["Agujero y dirección del aire","Solo la duración de la nota"],ok:0}]
+];
+function loadQuizBest(){try{return JSON.parse(localStorage.getItem("akdQuizBest")||"{}")}catch{return{}}}
+function renderLessonCheck(i){
+ const qs=lessonChecks[Math.min(3,Math.floor(i/10))];
+ const labels=lang==="pt"?{title:"Comprove o que aprendeu",check:"Conferir respostas"}:{title:"Comprobá lo aprendido",check:"Corregir respuestas"};
+ return '<div class="lessonCheck"><h3>'+labels.title+'</h3>'+qs.map((q,j)=>'<fieldset><legend>'+(j+1)+'. '+q.q+'</legend>'+q.options.map((option,k)=>'<label class="checkOption"><input type="radio" name="lessonCheck'+i+'_'+j+'" value="'+k+'"> '+option+'</label>').join("")+'</fieldset>').join("")+'<button type="button" id="checkAnswers">'+labels.check+'</button><p id="checkFeedback" role="status" aria-live="polite"></p></div>';
+}
 const lessonAudio=[
 ["C"],["C","D"],["C","C"],["C"],["C","D","E","F"],["C","C","C","C"],["C","D","E","F","G","A","B"],["C","C","G","G","A","A","G"],["C","C","C","C"],["E","G","E","D","C"],
 ["C","D","C","D"],["C","C","C","C"],["C","C","G","C"],["C","C","C","C"],["C","E","C","E"],["C","D","E","F"],["C","D","E","F","G","A","B"],["C","E","G","E"],["C","D","E","G","A"],["C","C","G","G"],
