@@ -115,6 +115,9 @@ assert.match(html, /id="staffIntro"/, "La introducción del entrenador debe loca
 assert.match(html, /Treinador de leitura: que nota é\?/, "Falta el título en portugués del entrenador");
 assert.match(html, /de 70 aulas concluídas/, "El progreso en portugués debe reflejar las 70 lecciones");
 assert.match(html, /<line x1="70" y1="185" x2="90" y2="185"\/>/, "El Do central debe tener su línea adicional correctamente ubicada");
+assert.match(html, /id="homeGoLessons"/);
+assert.match(html, /id="practiceGuideTitle"/);
+assert.match(html, /Empezá con la primera lección/);
 assert.doesNotMatch(html, /de 40 lecciones completadas|de 40 aulas concluídas/, "No debe quedar el contador antiguo de 40 lecciones");
 
 
