@@ -78,6 +78,12 @@ for (const [index, stage] of portugueseStages.entries()) {
 assert.match(html, /Math\.floor\(i\/10\)/, "El listado debe agrupar cada diez lecciones en su nivel");
 
 assert.match(html, /de 70 lecciones completadas/, "El progreso debe reflejar las 70 lecciones");
+
+assert.match(html, /id="rhythmTrainer"/, "Falta el entrenador interactivo de ritmo");
+assert.match(html, /const rhythmItems=\[/, "Faltan las preguntas de figuras, silencios y compás");
+assert.match(html, /function renderRhythmExercise\(\)/, "Falta la función que muestra el ejercicio rítmico");
+assert.match(html, /data-rhythm-answer/, "El entrenador rítmico debe permitir seleccionar respuestas");
+assert.match(html, /addEventListener\("click",e=>\{[\s\S]*?rhythmAsked\+\+/, "El entrenador rítmico debe corregir y contar respuestas");
 assert.match(html, /id="staffTrainer"/, "Falta el entrenador interactivo de lectura musical");
 assert.match(html, /function renderStaffTrainer\(\)/, "Falta la función que dibuja el entrenador");
 assert.match(html, /function checkStaffAnswer\(/, "El entrenador no corrige las respuestas");
