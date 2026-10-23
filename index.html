@@ -182,16 +182,64 @@ function translateStatic(pt){
 let lang="es",audioCtx=null,oscillators=[];const $=id=>document.getElementById(id);function loadDone(){try{return JSON.parse(localStorage.getItem("akdDone")||"[]")}catch{return[]}}
 function renderLessons(){const arr=lang==="pt"?ptLessons:lessons,done=loadDone();const stages=lang==="pt"?["Nível 1 · Fundamentos","Nível 2 · Desenvolvimento","Nível 3 · Técnicas intermediárias","Nível 4 · Avançado"]:["Nivel 1 · Fundamentos","Nivel 2 · Desarrollo","Nivel 3 · Técnicas intermedias","Nivel 4 · Avanzado"];let html="";arr.forEach((l,i)=>{if(i%10===0)html+='<h3 class="levelHeading">'+stages[Math.floor(i/10)]+'</h3>';html+='<div class="lesson"><div><b>'+(i+1)+". "+l[0]+'</b><br><span class="muted">'+(done.includes(i)?"✓ "+(lang==="pt"?"Concluída":"Completada"):(lang==="pt"?"Aula":"Lección")+" "+(i+1))+'</span></div><button type="button" data-lesson="'+i+'" onclick="showLesson('+i+')">'+(lang==="pt"?"Abrir":"Abrir")+"</button></div>";});$("lessonList").innerHTML=html}
 const lessonChecks=[
- [{q:"¿Qué indica la flecha hacia abajo (↓)?",options:["Soplar","Aspirar"],ok:0},{q:"¿Qué conviene priorizar al empezar?",options:["Tocar rápido","Sonido limpio y aire suave"],ok:1}],
- [{q:"¿Cuántos pulsos tiene un compás de 4/4?",options:["Dos","Cuatro"],ok:1},{q:"¿Qué dura una blanca en el ejemplo básico?",options:["Dos pulsos","Cuatro pulsos"],ok:0}],
- [{q:"¿Qué notas forman la escala de Do mayor?",options:["Do–Re–Mi–Fa–Sol–La–Si","Do–Mi–Fa♯–Sol–Si"],ok:0},{q:"¿Qué ayuda a mantener el ritmo?",options:["Acelerar cada frase","Contar el pulso de forma constante"],ok:1}],
- [{q:"¿Cómo se inicia el aprendizaje de técnicas avanzadas?",options:["Forzando el aire","Con notas limpias y controladas"],ok:1},{q:"¿Qué indica la tablatura?",options:["Agujero y dirección del aire","Solo la duración de la nota"],ok:0}]
+ [
+ {q:"¿Qué indica la flecha hacia abajo (↓)?",options:["Soplar","Aspirar"],ok:0},
+ {q:"¿Cuántos agujeros tiene una armónica diatónica estándar?",options:["10","7"],ok:0},
+ {q:"¿Qué conviene priorizar al empezar?",options:["Tocar rápido","Sonido limpio y aire suave"],ok:1},
+ {q:"¿Cómo conviene sostener la armónica?",options:["Con hombros relajados y sin apretar","Mordiéndola con fuerza"],ok:0},
+ {q:"¿Qué indica el número de una tablatura?",options:["El agujero que se usa","La cantidad de segundos"],ok:0},
+ {q:"¿Qué significa 4↑?",options:["Aspirar por el agujero 4","Soplar por el agujero 4"],ok:0},
+ {q:"¿Qué hacer si aparece tensión al tocar?",options:["Aflojar y descansar","Soplar con más fuerza"],ok:0},
+ {q:"¿Cuál es una buena primera meta?",options:["Una nota clara y estable","Tocar una melodía muy rápido"],ok:0}
+ ],
+ [
+ {q:"¿Cuántos pulsos tiene un compás de 4/4?",options:["Dos","Cuatro"],ok:1},
+ {q:"¿Cuánto dura una blanca en el ejemplo básico?",options:["Dos pulsos","Cuatro pulsos"],ok:0},
+ {q:"¿Qué ayuda a mantener el ritmo?",options:["Acelerar cada frase","Contar el pulso de forma constante"],ok:1},
+ {q:"¿Qué es una negra en el conteo básico?",options:["Un pulso","Cuatro pulsos"],ok:0},
+ {q:"¿Qué es un silencio musical?",options:["Un espacio sin tocar que mantiene el pulso","Dejar de contar el compás"],ok:0},
+ {q:"¿Qué hace una ligadura de prolongación?",options:["Suma la duración de notas de igual altura","Obliga a atacar cada nota de nuevo"],ok:0},
+ {q:"¿Qué conviene hacer con el metrónomo al empezar?",options:["Practicar despacio y regular","Ajustarlo al máximo"],ok:0},
+ {q:"¿Qué significa tocar una nota ligada?",options:["Mantener el sonido sin un nuevo ataque","Separarla con golpes de lengua"],ok:0}
+ ],
+ [
+ {q:"¿Qué notas forman la escala de Do mayor?",options:["Do–Re–Mi–Fa–Sol–La–Si","Do–Mi–Fa♯–Sol–Si"],ok:0},
+ {q:"¿Qué es un intervalo?",options:["La distancia entre dos alturas","La duración de un silencio"],ok:0},
+ {q:"¿Qué ayuda a recordar una melodía?",options:["Practicarla por frases","Cambiar el tempo constantemente"],ok:0},
+ {q:"¿Qué conviene escuchar al comparar dos notas?",options:["Si tienen alturas diferentes","Solo el volumen"],ok:0},
+ {q:"¿Qué significa subir una escala?",options:["Recorrer las notas en orden ascendente","Repetir una sola nota"],ok:0},
+ {q:"¿Qué es el fraseo?",options:["Dar forma a una idea musical","Tocar todas las notas sin pausa"],ok:0},
+ {q:"¿Qué relación tiene la tablatura con la nota?",options:["Indica agujero y dirección del aire","Indica únicamente el ritmo"],ok:0},
+ {q:"¿Qué hacer después de una frase musical?",options:["Respetar una pausa si corresponde","Acelerar siempre"],ok:0}
+ ],
+ [
+ {q:"¿Cómo se inicia el aprendizaje de técnicas avanzadas?",options:["Forzando el aire","Con notas limpias y controladas"],ok:1},
+ {q:"¿Qué permite la dinámica?",options:["Variar la intensidad expresiva","Cambiar el nombre de las notas"],ok:0},
+ {q:"¿Qué es un acento musical?",options:["Destacar un pulso o una nota","Tocar toda la frase más rápido"],ok:0},
+ {q:"¿Qué ayuda a preparar el bending?",options:["Control del aire y relajación","Tensión de mandíbula y soplido fuerte"],ok:0},
+ {q:"¿Qué significa variar una frase?",options:["Cambiar algún elemento manteniendo la idea musical","Tocar sin escuchar"],ok:0},
+ {q:"¿Cómo se deben practicar notas largas?",options:["Con volumen estable y sin tensión","Con la máxima fuerza posible"],ok:0},
+ {q:"¿Para qué sirve escuchar activamente?",options:["Comparar y corregir lo que tocás","Evitar prestar atención al sonido"],ok:0},
+ {q:"¿Qué conviene priorizar al aumentar la velocidad?",options:["Mantener limpieza y regularidad","Aceptar cualquier nota incorrecta"],ok:0}
+ ]
 ];
 function loadQuizBest(){try{return JSON.parse(localStorage.getItem("akdQuizBest")||"{}")}catch{return{}}}
+let currentLessonQuestions=[];
 function renderLessonCheck(i){
- const qs=lessonChecks[Math.min(3,Math.floor(i/10))];
+ const pool=lessonChecks[Math.min(3,Math.floor(i/10))];
+ const shuffled=pool.map(q=>({q:q.q,options:q.options.map((option,k)=>({option,correct:k===q.ok})).sort(()=>Math.random()-.5)})).sort(()=>Math.random()-.5).slice(0,2);
+ currentLessonQuestions=shuffled.map(q=>({q:q.q,options:q.options.map(o=>o.option),ok:q.options.findIndex(o=>o.correct)}));
  const labels=lang==="pt"?{title:"Comprove o que aprendeu",check:"Conferir respostas"}:{title:"Comprobá lo aprendido",check:"Corregir respuestas"};
- return '<div class="lessonCheck"><h3>'+labels.title+'</h3>'+qs.map((q,j)=>'<fieldset><legend>'+(j+1)+'. '+q.q+'</legend>'+q.options.map((option,k)=>'<label class="checkOption"><input type="radio" name="lessonCheck'+i+'_'+j+'" value="'+k+'"> '+option+'</label>').join("")+'</fieldset>').join("")+'<button type="button" id="checkAnswers">'+labels.check+'</button><p id="checkFeedback" role="status" aria-live="polite"></p></div>';
+ return '<div class="lessonCheck"><h3>'+labels.title+'</h3>'+currentLessonQuestions.map((q,j)=>'<fieldset><legend>'+(j+1)+'. '+q.q+'</legend>'+q.options.map((option,k)=>'<label class="checkOption"><input type="radio" name="lessonCheck'+i+'_'+j+'" value="'+k+'"> '+option+'</label>').join("")+'</fieldset>').join("")+'<button type="button" id="checkAnswers">'+labels.check+'</button><p id="checkFeedback" role="status" aria-live="polite"></p></div>';
+}
+function closeLesson(){
+ const detail=$("lessonDetail");
+ stopAudio();
+ detail.hidden=true;
+ detail.classList.add("hidden");
+ detail.classList.remove("lesson-modal");
+ detail.setAttribute("aria-modal","false");
+ currentLessonIndex=null;
 }
 const lessonAudio=[
 ["C"],["C","D"],["C","C"],["C"],["C","D","E","F"],["C","C","C","C"],["C","D","E","F","G","A","B"],["C","C","G","G","A","A","G"],["C","C","C","C"],["E","G","E","D","C"],
@@ -200,7 +248,7 @@ const lessonAudio=[
 ["C","D","E","F"],["C","D","E","G"],["C","D","E","G","A"],["C","E","G","E"],["C","D","E","D"],["C","E","G"],["D","D","D","D"],["D","D","D","D"],["C","D","E","F"],["C","D","E","F","G","A","B"]
 ];
 function playLessonExample(i,notes){stopAudio();const unit=beat()*.82;let delay=0;notes.forEach(n=>{let duration=unit;if(i===3)duration=4;else if(i===5||i===8)duration=unit*.55;else if(i===15)duration=unit*1.8;tone(f[n],duration,delay);delay+=duration+(i===3?0:.07)});}
-let currentLessonIndex=null;function showLesson(i){currentLessonIndex=i;const l=(lang==="pt"?ptLessons:lessons)[i];if(!l)return;const detail=$("lessonDetail");detail.className="card lesson-modal";detail.setAttribute("aria-labelledby","lessonDialogTitle");const notes=lessonAudio[i]||["C","D","E"];const tabMapLesson={C:"4↓",D:"4↑",E:"5↓",F:"5↑",G:"6↓",A:"6↑",B:"7↑"};const noteNamesLesson=lang==="pt"?{C:"Dó",D:"Ré",E:"Mi",F:"Fá",G:"Sol",A:"Lá",B:"Si"}:{C:"Do",D:"Re",E:"Mi",F:"Fa",G:"Sol",A:"La",B:"Si"};detail.innerHTML='<h2 id="lessonDialogTitle">'+(i+1)+". "+l[0]+'</h2><p>'+l[1]+'</p><p class="muted">'+l[2]+'</p>'+(l[3]?'<h3>'+(lang==="pt"?"Prática guiada":"Práctica guiada")+'</h3><p>'+l[3]+'</p>':'')+'<h3>'+(lang==="pt"?"Tablatura de prática":"Tablatura de práctica")+'</h3><p class="tabs">'+notes.map(n=>tabMapLesson[n]).join(" · ")+'</p><p class="muted">'+(lang==="pt"?"Notas: ":"Notas: ")+notes.map(n=>noteNamesLesson[n]+" ("+n+")").join(" · ")+'</p><button id="listenLesson">'+(lang==="pt"?"Ouvir referência sonora":"Escuchar referencia sonora")+'</button><p class="muted">'+(lang==="pt"?"Áudio eletrônico de referência; não reproduz o timbre real da harmônica nem demonstra bending, vibrato ou dinâmica.":"Audio electrónico de referencia: no reproduce el timbre real de la armónica ni demuestra bending, vibrato o dinámica.")+'</p> '+(l[4]?'<h3>'+(lang==="pt"?"Objetivo de aprendizagem":"Objetivo de aprendizaje")+'</h3><p>'+l[4]+'</p>':'')+renderLessonCheck(i)+'<button class="primary" id="complete">'+(lang==="pt"?"Marcar como concluída":"Marcar como completada")+'</button> <button id="closeDetail">'+(lang==="pt"?"Fechar":"Cerrar")+'</button>';$("listenLesson").onclick=()=>playLessonExample(i,notes);$("checkAnswers").onclick=()=>{const qs=lessonChecks[Math.min(3,Math.floor(i/10))];let score=0,answered=0;qs.forEach((q,j)=>{const selected=detail.querySelector('input[name="lessonCheck'+i+'_'+j+'"]:checked');if(selected){answered++;if(Number(selected.value)===q.ok)score++;}});const fb=$("checkFeedback");if(answered===qs.length){const best=loadQuizBest();if(best[i]===undefined||score>best[i]){best[i]=score;try{localStorage.setItem("akdQuizBest",JSON.stringify(best))}catch{}}}const saved=loadQuizBest()[i];fb.textContent=lang==="pt"?(answered<qs.length?"Responda às duas perguntas antes de conferir.":score+" de "+qs.length+" corretas. Melhor resultado: "+saved+"/"+qs.length+". "+(score===qs.length?"Muito bem! Revise e continue praticando.":"Revise a explicação e tente novamente.")):(answered<qs.length?"Respondé las dos preguntas antes de corregir.":score+" de "+qs.length+" correctas. Mejor resultado: "+saved+"/"+qs.length+". "+(score===qs.length?"¡Muy bien! Repasá y seguí practicando.":"Revisá la explicación e intentá otra vez."));fb.className=answered===qs.length&&score===qs.length?"success":"muted";};$("complete").onclick=()=>{let d=loadDone();if(!d.includes(i))d.push(i);try{localStorage.setItem("akdDone",JSON.stringify(d))}catch{}renderLessons();renderProgress();detail.classList.add("hidden");detail.classList.remove("lesson-modal")};$("closeDetail").onclick=()=>{detail.classList.add("hidden");detail.classList.remove("lesson-modal")}}
+let currentLessonIndex=null;function showLesson(i){currentLessonIndex=i;const l=(lang==="pt"?ptLessons:lessons)[i];if(!l)return;const detail=$("lessonDetail");detail.hidden=false;detail.className="card lesson-modal";detail.setAttribute("aria-modal","true");detail.setAttribute("aria-labelledby","lessonDialogTitle");const notes=lessonAudio[i]||["C","D","E"];const tabMapLesson={C:"4↓",D:"4↑",E:"5↓",F:"5↑",G:"6↓",A:"6↑",B:"7↑"};const noteNamesLesson=lang==="pt"?{C:"Dó",D:"Ré",E:"Mi",F:"Fá",G:"Sol",A:"Lá",B:"Si"}:{C:"Do",D:"Re",E:"Mi",F:"Fa",G:"Sol",A:"La",B:"Si"};detail.innerHTML='<h2 id="lessonDialogTitle">'+(i+1)+". "+l[0]+'</h2><p>'+l[1]+'</p><p class="muted">'+l[2]+'</p>'+(l[3]?'<h3>'+(lang==="pt"?"Prática guiada":"Práctica guiada")+'</h3><p>'+l[3]+'</p>':'')+'<h3>'+(lang==="pt"?"Tablatura de prática":"Tablatura de práctica")+'</h3><p class="tabs">'+notes.map(n=>tabMapLesson[n]).join(" · ")+'</p><p class="muted">'+(lang==="pt"?"Notas: ":"Notas: ")+notes.map(n=>noteNamesLesson[n]+" ("+n+")").join(" · ")+'</p><button id="listenLesson">'+(lang==="pt"?"Ouvir referência sonora":"Escuchar referencia sonora")+'</button><p class="muted">'+(lang==="pt"?"Áudio eletrônico de referência; não reproduz o timbre real da harmônica nem demonstra bending, vibrato ou dinâmica.":"Audio electrónico de referencia: no reproduce el timbre real de la armónica ni demuestra bending, vibrato o dinámica.")+'</p> '+(l[4]?'<h3>'+(lang==="pt"?"Objetivo de aprendizagem":"Objetivo de aprendizaje")+'</h3><p>'+l[4]+'</p>':'')+renderLessonCheck(i)+'<button class="primary" id="complete">'+(lang==="pt"?"Marcar como concluída":"Marcar como completada")+'</button> <button id="closeDetail">'+(lang==="pt"?"Fechar":"Cerrar")+'</button>';$("listenLesson").onclick=()=>playLessonExample(i,notes);$("checkAnswers").onclick=()=>{const qs=currentLessonQuestions;let score=0,answered=0;qs.forEach((q,j)=>{const selected=detail.querySelector('input[name="lessonCheck'+i+'_'+j+'"]:checked');if(selected){answered++;if(Number(selected.value)===q.ok)score++;}});const fb=$("checkFeedback");if(answered===qs.length){const best=loadQuizBest();if(best[i]===undefined||score>best[i]){best[i]=score;try{localStorage.setItem("akdQuizBest",JSON.stringify(best))}catch{}}}const saved=loadQuizBest()[i];fb.textContent=lang==="pt"?(answered<qs.length?"Responda às duas perguntas antes de conferir.":score+" de "+qs.length+" corretas. Melhor resultado: "+saved+"/"+qs.length+". "+(score===qs.length?"Muito bem! Revise e continue praticando.":"Revise a explicação e tente novamente.")):(answered<qs.length?"Respondé las dos preguntas antes de corregir.":score+" de "+qs.length+" correctas. Mejor resultado: "+saved+"/"+qs.length+". "+(score===qs.length?"¡Muy bien! Repasá y seguí practicando.":"Revisá la explicación e intentá otra vez."));fb.className=answered===qs.length&&score===qs.length?"success":"muted";};$("complete").onclick=()=>{let d=loadDone();if(!d.includes(i))d.push(i);try{localStorage.setItem("akdDone",JSON.stringify(d))}catch{}renderLessons();renderProgress();closeLesson()};$("closeDetail").onclick=closeLesson}
 function renderProgress(){const n=loadDone().filter(i=>i>=0&&i<lessons.length).length;$("count").textContent=n;$("bar").style.width=(n/lessons.length*100)+"%"}function view(v){document.querySelectorAll(".view").forEach(s=>s.classList.toggle("hidden",s.id!==v));document.querySelectorAll("[data-view]").forEach(b=>b.setAttribute("aria-current",b.dataset.view===v?"true":"false"))}
 let harmonicaWave=null;
 const harmonicaSampleUrls=[
