@@ -102,6 +102,8 @@ assert.match(html, /function renderRhythmExercise\(\)/, "Falta la función que m
 assert.match(html, /data-rhythm-answer/, "El entrenador rítmico debe permitir seleccionar respuestas");
 assert.match(html, /addEventListener\("click",e=>\{[\s\S]*?rhythmAsked\+\+/, "El entrenador rítmico debe corregir y contar respuestas");
 assert.match(html, /id="weeklyPlanCard"/, "Falta el plan semanal progresivo");
+assert.match(html, /const weeklyTitlesPT=\[\[/, "Los 28 títulos del plan semanal deben tener traducción al portugués");
+assert.match(html, /weeklyTitlesPT\[weeklyWeek-1\]\[weeklyDay\]/, "El título del día debe usar el idioma seleccionado");
 assert.match(html, /const weeklyCurriculum=\[/, "Falta el currículo de cuatro semanas");
 assert.match(html, /function renderWeeklyPlan\(\)/, "Falta la función de renderizado del plan semanal");
 assert.match(html, /id="weeklyComplete"/, "Falta el control para registrar entrenamientos semanales");
