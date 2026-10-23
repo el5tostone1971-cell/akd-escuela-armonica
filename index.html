@@ -481,7 +481,7 @@ renderLessons();renderProgress();translateStatic(false);renderStaffTrainer();
 const earPatterns=[
  {hits:[0,1,2,3],es:"Una nota en cada pulso",pt:"Uma nota em cada tempo"},
  {hits:[0,2],es:"Notas en los pulsos 1 y 3",pt:"Notas nos tempos 1 e 3"},
- {hits:[0,2],es:"Nota en 1 y 3; silencio en 2 y 4",pt:"Nota em 1 e 3; pausa em 2 e 4"}
+ {hits:[0,1,3],es:"Notas en 1, 2 y 4; silencio en 3",pt:"Notas em 1, 2 e 4; pausa no 3"}
 ];
 let earIndex=1,earAnswer=null,audioCtx=null,harmTimer=null,harmBeat=0;
 function audioReady(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();if(audioCtx.state==="suspended")audioCtx.resume();return audioCtx}
@@ -496,7 +496,7 @@ function earTranslate(){
  $("earPlay").textContent=pt?"▶ Ouvir padrão":"▶ Escuchar patrón";
  $("earNext").textContent=pt?"Novo padrão":"Nuevo patrón";
  $("earFeedback").textContent=pt?"Primeiro, ouça o padrão.":"Primero escuchá el patrón.";
- const labels=pt?["Uma nota em cada tempo","Notas nos tempos 1 e 3","Tocar em 1 e 3; pausa em 2 e 4"]:["Una nota en cada pulso","Notas en los pulsos 1 y 3","Tocar en 1 y 3; silencio en 2 y 4"];
+ const labels=pt?["Uma nota em cada tempo","Notas nos tempos 1 e 3","Tocar em 1, 2 e 4; pausa no 3"]:["Una nota en cada pulso","Notas en los pulsos 1 y 3","Tocar en 1, 2 y 4; silencio en 3"];
  $("earChoices").querySelectorAll("button").forEach((b,i)=>{b.textContent=labels[i];b.disabled=false});
  $("harmPill").textContent=pt?"Leve para a harmônica":"Llevalo a la armónica";
  $("harmTitle").textContent=pt?"Toque no pulso":"Tocá con el pulso";
@@ -519,9 +519,7 @@ $("earNext").onclick=()=>{earIndex=(earIndex+1+Math.floor(Math.random()*2))%earP
 $("earChoices").addEventListener("click",e=>{
  const b=e.target.closest("button[data-ear]");if(!b)return;
  const picked=Number(b.dataset.ear),pt=lang==="pt";
- // Pattern 1 and 2 intentionally share attacks, but differ in whether the attacks are short or held.
- // Make the third option a distinct syncopated/rest pattern in the actual audio.
- const correct=earIndex===2?2:earIndex;
+ const correct=earIndex;
  const ok=picked===correct;
  $("earFeedback").textContent=ok?(pt?"Correto! Você reconheceu o padrão.":"¡Correcto! Reconociste el patrón."):(pt?"Ainda não. Ouça novamente e conte os quatro tempos.":"Todavía no. Escuchá otra vez y contá los cuatro pulsos.");
  $("earChoices").querySelectorAll("button").forEach(x=>x.disabled=true);
