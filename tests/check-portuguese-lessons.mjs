@@ -6,37 +6,70 @@ const html = fs.readFileSync("index.html", "utf8");
 
 function capture(pattern, label) {
   const match = html.match(pattern);
-  assert.ok(match, `No se encontró el bloque: ${label}`);
+  assert.ok(match, "No se encontró el bloque: " + label);
   return match[1];
 }
 
-const initialSource = capture(/const ptLessons=(\[[\s\S]*?\]);/, "las primeras 10 lecciones en portugués");
-const appendedSource = capture(/ptLessons\.push\(\.\.\.(\[[\s\S]*?\])\);/, "las lecciones 11 a 40 en portugués");
+function readLessonBank(name, initialPattern, appendPattern) {
+  const initial = JSON.parse(capture(initialPattern, "banco inicial " + name));
+  const appended = [...html.matchAll(appendPattern)].flatMap(match => JSON.parse(match[1]));
+  return { initial, all: [...initial, ...appended], appended };
+}
 
-const initial = vm.runInNewContext(initialSource);
-const appended = vm.runInNewContext(appendedSource);
-const all = [...initial, ...appended];
+const spanish = readLessonBank(
+  "lessons",
+  /const lessons=(\[[\s\S]*?\]);/,
+  /lessons\.push\(\.\.\.(\[[\s\S]*?\])\);/g
+);
+const portuguese = readLessonBank(
+  "ptLessons",
+  /const ptLessons=(\[[\s\S]*?\]);/,
+  /ptLessons\.push\(\.\.\.(\[[\s\S]*?\])\);/g
+);
 
-assert.equal(initial.length, 10, "El bloque inicial debe contener 10 lecciones");
-assert.equal(appended.length, 30, "El bloque agregado debe contener exactamente las lecciones 11 a 40");
-assert.equal(all.length, 40, "Portugués debe tener 40 lecciones en total");
+assert.equal(spanish.initial.length, 40, "El banco inicial en español debe conservar sus 40 lecciones originales");
+assert.equal(spanish.appended.length, 30, "Español debe agregar exactamente las lecciones 41 a 70");
+assert.equal(spanish.all.length, 70, "Español debe tener 70 lecciones en total");
+assert.equal(portuguese.initial.length, 10, "El bloque inicial en portugués debe contener 10 lecciones");
+assert.equal(portuguese.appended.length, 60, "Portugués debe conservar las 60 lecciones agregadas");
+assert.equal(portuguese.all.length, 70, "Portugués debe tener 70 lecciones en total");
 
-for (const [index, lesson] of all.entries()) {
-  assert.ok(Array.isArray(lesson), `Lección ${index + 1}: formato inválido`);
-  assert.ok([3, 5].includes(lesson.length), `Lección ${index + 1}: cantidad inesperada de campos`);
-  for (const [fieldIndex, value] of lesson.entries()) {
-    assert.equal(typeof value, "string", `Lección ${index + 1}, campo ${fieldIndex + 1}: no es texto`);
-    assert.ok(value.trim().length > 0, `Lección ${index + 1}, campo ${fieldIndex + 1}: vacío`);
+for (const pair of [["español", spanish], ["portugués", portuguese]]) {
+  const language = pair[0], bank = pair[1];
+  for (const [index, lesson] of bank.all.entries()) {
+    assert.ok(Array.isArray(lesson), language + ", lección " + (index + 1) + ": formato inválido");
+    assert.ok([3, 5].includes(lesson.length), language + ", lección " + (index + 1) + ": cantidad inesperada de campos");
+    for (const [fieldIndex, value] of lesson.entries()) {
+      assert.equal(typeof value, "string", language + ", lección " + (index + 1) + ", campo " + (fieldIndex + 1) + ": no es texto");
+      assert.ok(value.trim().length > 0, language + ", lección " + (index + 1) + ", campo " + (fieldIndex + 1) + ": vacío");
+    }
   }
 }
-for (const [index, lesson] of appended.entries()) {
-  assert.equal(lesson.length, 5, `Lección ${index + 11}: faltan práctica u objetivo de aprendizaje`);
+for (const [index, lesson] of spanish.appended.entries()) {
+  assert.equal(lesson.length, 5, "Lección en español " + (index + 41) + ": faltan práctica u objetivo de aprendizaje");
+}
+for (const [index, lesson] of portuguese.appended.entries()) {
+  assert.equal(lesson.length, 5, "Lección en portugués " + (index + 11) + ": faltan práctica u objetivo de aprendizaje");
 }
 
-assert.match(html, /const arr=lang==="pt"\?ptLessons:lessons/, "La lista de lecciones no selecciona el idioma portugués");
+assert.match(html, /const arr=lang==="pt"\?ptLessons:lessons/, "La lista de lecciones no selecciona el banco según el idioma");
 assert.match(html, /\$\("lang"\)\.onchange=[\s\S]*?renderLessons\(\)/, "Cambiar idioma no vuelve a dibujar la lista de lecciones");
-assert.match(html, /function showLesson\(i\)\{currentLessonIndex=i;const l=\(lang==="pt"\?ptLessons:lessons\)\[i\]/, "La pantalla de detalle no carga las lecciones en portugués");
+assert.match(html, /function showLesson\(i\)\{currentLessonIndex=i;const l=\(lang==="pt"\?ptLessons:lessons\)\[i\]/, "El detalle no carga las lecciones según el idioma");
 assert.match(html, /const lessonChecksPt=\[/, "Falta el banco de preguntas en portugués");
 assert.match(html, /const pool=\(lang==="pt"\?lessonChecksPt:lessonChecks\)/, "El cuestionario no selecciona las preguntas según el idioma");
 
-console.log("OK: 40 lecciones en portugués; las lecciones 11–40 tienen cinco campos completos; el selector y el detalle usan ptLessons.");
+const stageMatch = html.match(/const stages=lang==="pt"\?\[([\s\S]*?)\]:\[([\s\S]*?)\];/);
+assert.ok(stageMatch, "No se encontraron los títulos de niveles por idioma");
+const portugueseStages = vm.runInNewContext("[" + stageMatch[1] + "]");
+const spanishStages = vm.runInNewContext("[" + stageMatch[2] + "]");
+assert.equal(spanishStages.length, 7, "Español debe definir los siete niveles");
+assert.equal(portugueseStages.length, 7, "Portugués debe definir los siete niveles");
+for (const [index, stage] of spanishStages.entries()) {
+  assert.ok(stage.includes("Nivel " + (index + 1)), "Falta el nombre del nivel " + (index + 1) + " en español");
+}
+for (const [index, stage] of portugueseStages.entries()) {
+  assert.ok(stage.includes("Nível " + (index + 1)), "Falta el nombre del nivel " + (index + 1) + " en portugués");
+}
+assert.match(html, /Math\.floor\(i\/10\)/, "El listado debe agrupar cada diez lecciones en su nivel");
+
+console.log("OK: 70 lecciones en cada idioma, campos completos en las 30 nuevas lecciones españolas, siete niveles por idioma y cuestionarios localizados.");
