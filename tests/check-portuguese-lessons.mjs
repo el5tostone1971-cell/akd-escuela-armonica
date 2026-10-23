@@ -81,6 +81,10 @@ assert.match(html, /de 70 lecciones completadas/, "El progreso debe reflejar las
 
 assert.match(html, /let micPitchHistory=\[\]/, "El afinador debe estabilizar varias lecturas del micrófono");
 assert.match(html, /if\(corrs\[lag\]>best&&corrs\[lag\]>=corrs\[lag-1\]&&corrs\[lag\]>=corrs\[lag\+1\]\)\{best=corrs\[lag\];bestLag=lag\}/, "El detector debe elegir el pico de correlación más fuerte");
+assert.match(html, /id="guidedStart"/, "Falta iniciar la rutina guiada de práctica");
+assert.match(html, /function guidedNextStage\(\)/, "La rutina guiada debe avanzar entre etapas y finalizar");
+assert.match(html, /id="guidedTimer"/, "La rutina guiada debe mostrar el temporizador");
+assert.match(html, /guidedRoutineTranslate\(\)/, "La rutina guiada debe actualizar el idioma");
 assert.match(html, /id="rhythmPerformance"/, "Falta la evaluación de precisión rítmica");
 assert.match(html, /id="perfStart"/, "Falta iniciar la evaluación rítmica");
 assert.match(html, /id="perfTap"/, "Falta el control de golpes para medir el pulso");
