@@ -72,4 +72,16 @@ for (const [index, stage] of portugueseStages.entries()) {
 }
 assert.match(html, /Math\.floor\(i\/10\)/, "El listado debe agrupar cada diez lecciones en su nivel");
 
+assert.match(html, /de 70 lecciones completadas/, "El progreso debe reflejar las 70 lecciones");
+assert.match(html, /id="staffTrainer"/, "Falta el entrenador interactivo de lectura musical");
+assert.match(html, /function renderStaffTrainer\(\)/, "Falta la función que dibuja el entrenador");
+assert.match(html, /function checkStaffAnswer\(/, "El entrenador no corrige las respuestas");
+assert.match(html, /y-20/, "La posición visual de las notas del entrenador no coincide con el pentagrama");
+assert.match(html, /id="staffIntro"/, "La introducción del entrenador debe localizarse por idioma");
+assert.match(html, /Treinador de leitura: que nota é\?/, "Falta el título en portugués del entrenador");
+assert.match(html, /de 70 aulas concluídas/, "El progreso en portugués debe reflejar las 70 lecciones");
+assert.match(html, /<line x1="70" y1="185" x2="90" y2="185"\/>/, "El Do central debe tener su línea adicional correctamente ubicada");
+assert.doesNotMatch(html, /de 40 lecciones completadas|de 40 aulas concluídas/, "No debe quedar el contador antiguo de 40 lecciones");
+
+
 console.log("OK: 70 lecciones en cada idioma, campos completos en las 30 nuevas lecciones españolas, siete niveles por idioma y cuestionarios localizados.");
