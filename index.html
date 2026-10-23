@@ -224,6 +224,53 @@ function translateStatic(pt){
   n.nodeValue=value;
  }
  const attrs=[["start","Continuar aprendiendo","Continuar aprendendo"]];
+ if(pt){
+ const homePT={
+ homeStartTitle:"Comece por aqui",
+ homeStartText:"Se você está começando, abra a primeira aula. A escola guia você passo a passo; não precisa usar todas as ferramentas de uma vez.",
+ homeRecommended:"PRIMEIRO PASSO",
+ homeLessonTitle:"1. Comece pela primeira aula",
+ homeLessonText:"Aprenda os fundamentos e avance em ordem. Este é o caminho recomendado se você ainda não sabe por onde começar.",
+ homeGoLessons:"Abrir a primeira aula →",
+ homePracticeTitle:"Você já conhece o básico",
+ homePracticeText:"Vá para Prática para treinar notas, ritmo e afinação com ferramentas interativas.",
+ homeGoPractice:"Ir para Prática",
+ homeTheoryTitle:"Quer entender música?",
+ homeTheoryText:"A seção Teoria musical explica a pauta, as notas e o ritmo desde o início.",
+ homeGoTheory:"Aprender teoria",
+ homeHint:"Dica: escolha uma atividade por vez. Quando ela ficar confortável, passe para a próxima.",
+ homeGoSongs:"Ver melodias",
+ homeGoMap:"Consultar o mapa de notas"
+ };
+ Object.entries(homePT).forEach(([id,value])=>{if($(id))$(id).textContent=value;});
+ const countLabel=document.querySelector(".home-progress-count span");if(countLabel)countLabel.textContent="/ 70 aulas";
+ const songsHeader=document.querySelector("#songs > .card h2");if(songsHeader)songsHeader.textContent="Repertório progressivo · 40 peças";
+ const songsIntro=document.querySelector("#songs > .card p");if(songsIntro)songsIntro.textContent="40 peças com quatro etapas de aprendizagem: frase A, frase B, união das frases e arranjo de estudo ampliado. Cada peça mostra tablatura, nomes das notas e áudio para praticar com andamento ajustável. Os arranjos ampliados são versões didáticas para estudo; não são apresentados como transcrições completas verificadas das gravações originais.";
+ const songCards=document.querySelectorAll("#songs .grid > article");
+ const songPT=[
+ ["Brilha, Brilha, Estrelinha","Primeira frase em Dó maior.","Ouvir referência"],
+ ["Ode à alegria","Trecho inicial da melodia de Beethoven.","Ouvir referência"],
+ ["Eco de três notas","Repita cada grupo e mantenha a pulsação constante.","Ouvir referência"],
+ ["Mary tinha um carneirinho","Frase tradicional inicial.","Ouvir referência"],
+ ["Frère Jacques","Trecho tradicional inicial.","Ouvir referência"],
+ ["Ponte de Londres","Frase tradicional inicial, adaptada para Dó.","Ouvir referência"],
+ ["Remar, remar, remar seu barco","Trecho tradicional inicial.","Ouvir referência"],
+ ["Sininhos de Natal","Trecho inicial de «Jingle Bells».","Ouvir referência"],
+ ["Parabéns pra você","Frase inicial em Dó maior.","Ouvir referência"],
+ ["Quando os santos marcham","Trecho tradicional inicial.","Ouvir referência"]
+ ];
+ songPT.forEach((v,i)=>{const card=songCards[i];if(card){const h=card.querySelector("h2");const p=card.querySelector("p");const btn=card.querySelector("button");if(h)h.textContent=v[0];if(p)p.textContent=v[1];if(btn)btn.textContent=v[2];}});
+}else{
+ const homeES={homeStartTitle:"Empezá por acá",homeStartText:"Si recién empezás, abrí la primera lección. La escuela te guía paso a paso; no hace falta usar todas las herramientas de golpe.",homeRecommended:"PRIMER PASO",homeLessonTitle:"1. Empezá con la primera lección",homeLessonText:"Aprendé los fundamentos y avanzá en orden. Es el camino recomendado si todavía no sabés por dónde empezar.",homeGoLessons:"Abrir primera lección →",homePracticeTitle:"Ya conocés lo básico",homePracticeText:"Andá a Práctica para entrenar notas, ritmo y afinación con herramientas interactivas.",homeGoPractice:"Ir a Práctica",homeTheoryTitle:"¿Querés entender la música?",homeTheoryText:"La sección Teoría musical explica el pentagrama, las notas y el ritmo desde cero.",homeGoTheory:"Aprender teoría",homeHint:"Consejo: elegí una sola actividad por vez. Cuando te resulte cómoda, pasá a la siguiente.",homeGoSongs:"Ver melodías",homeGoMap:"Consultar mapa de notas"};
+ Object.entries(homeES).forEach(([id,value])=>{if($(id))$(id).textContent=value;});
+ const countLabel=document.querySelector(".home-progress-count span");if(countLabel)countLabel.textContent="/ 70 lecciones";
+ const songsHeader=document.querySelector("#songs > .card h2");if(songsHeader)songsHeader.textContent="Repertorio progresivo · 40 piezas";
+ const songsIntro=document.querySelector("#songs > .card p");if(songsIntro)songsIntro.textContent="40 piezas con cuatro etapas de aprendizaje: frase A, frase B, unión de frases y arreglo de estudio ampliado. Cada pieza muestra tablatura, nombres de notas y audio para practicar a tempo ajustable. Los arreglos ampliados son versiones didácticas de estudio; no se presentan como transcripciones completas verificadas de las grabaciones originales.";
+ const songCards=document.querySelectorAll("#songs .grid > article");
+ const songES=[["Estrellita, ¿dónde estás?","Primera frase en Do mayor."],["Oda a la alegría","Fragmento inicial de la melodía de Beethoven."],["Eco de tres notas","Repetí cada grupo y mantené el pulso constante."],["María tenía un corderito","Frase inicial tradicional."],["Frère Jacques","Motivo inicial tradicional."],["Puente de Londres","Frase inicial tradicional, adaptada a Do."],["Rema, rema, rema tu barca","Motivo inicial tradicional."],["Campanitas de Navidad","Motivo inicial de «Jingle Bells»."],["Cumpleaños feliz","Frase inicial en Do mayor."],["Cuando los santos marchan","Motivo inicial tradicional."]];
+ songES.forEach((v,i)=>{const card=songCards[i];if(card){const h=card.querySelector("h2");const p=card.querySelector("p");const btn=card.querySelector("button");if(h)h.textContent=v[0];if(p)p.textContent=v[1];if(btn)btn.textContent="Escuchar referencia";}});
+}
+
  document.querySelectorAll("[data-view]").forEach(b=>{const k=b.dataset.view;b.textContent=pt?({home:"Início",lessons:"Aulas",practice:"Prática",songs:"Melodias",map:"Mapa de notas",theory:"Teoria musical"}[k]):({home:"Inicio",lessons:"Lecciones",practice:"Práctica",songs:"Melodías",map:"Mapa de notas",theory:"Teoría musical"}[k]);});
  $("start").textContent=pt?"Começar pela primeira aula":"Empezar por la primera lección";
  $("routine").textContent=pt?"Marcar rotina como feita hoje":"Marcar rutina hecha hoy";guidedRoutineTranslate();
