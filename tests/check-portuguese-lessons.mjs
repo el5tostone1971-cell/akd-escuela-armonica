@@ -124,3 +124,10 @@ assert.doesNotMatch(html, /de 40 lecciones completadas|de 40 aulas concluídas/,
 
 
 console.log("OK: 70 lecciones en cada idioma, campos completos en las 30 nuevas lecciones españolas, siete niveles por idioma y cuestionarios localizados.");
+
+assert.match(html, /homeStartTitle:"Comece por aqui"/, "A tela inicial precisa estar localizada em português");
+assert.match(html, /homeLessonTitle:"1. Comece pela primeira aula"/, "A chamada da primeira aula precisa estar em português");
+assert.match(html, /Repertório progressivo · 40 peças/, "O cabeçalho de melodias precisa estar em português");
+assert.match(html, /união das frases e arranjo de estudo ampliado/, "A descrição do repertório precisa estar em português");
+assert.match(html, /countLabel\.textContent="\/ 70 aulas"/, "O contador de aulas precisa estar em português");
+assert.match(html, /Brilha, Brilha, Estrelinha/, "A primeira melodia precisa estar localizada em português");
