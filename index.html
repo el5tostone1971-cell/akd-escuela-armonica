@@ -263,10 +263,52 @@ const lessonChecks=[
  {q:"¿Qué conviene priorizar al aumentar la velocidad?",options:["Mantener limpieza y regularidad","Aceptar cualquier nota incorrecta"],ok:0}
  ]
 ];
+const lessonChecksPt=[
+ [
+ {q:"O que indica a seta para baixo (↓)?",options:["Soprar","Aspirar"],ok:0},
+ {q:"Quantos orifícios tem uma harmônica diatônica padrão?",options:["10","7"],ok:0},
+ {q:"O que é melhor priorizar no início?",options:["Tocar rápido","Som limpo e fluxo de ar suave"],ok:1},
+ {q:"Como segurar a harmônica?",options:["Com os ombros relaxados e sem apertar","Mordendo com força"],ok:0},
+ {q:"O que o número da tablatura indica?",options:["O orifício utilizado","A quantidade de segundos"],ok:0},
+ {q:"O que significa 4↑?",options:["Aspirar pelo orifício 4","Soprar pelo orifício 4"],ok:0},
+ {q:"O que fazer se sentir tensão ao tocar?",options:["Relaxar e descansar","Soprar com mais força"],ok:0},
+ {q:"Qual é uma boa primeira meta?",options:["Uma nota clara e estável","Tocar uma melodia muito rápido"],ok:0}
+ ],
+ [
+ {q:"Quantos tempos tem um compasso 4/4?",options:["Dois","Quatro"],ok:1},
+ {q:"Quanto dura uma mínima no exemplo básico?",options:["Dois tempos","Quatro tempos"],ok:0},
+ {q:"O que ajuda a manter o ritmo?",options:["Acelerar cada frase","Contar o pulso de forma constante"],ok:1},
+ {q:"O que é uma semínima na contagem básica?",options:["Um tempo","Quatro tempos"],ok:0},
+ {q:"O que é uma pausa musical?",options:["Um espaço sem tocar, mantendo o pulso","Parar de contar o compasso"],ok:0},
+ {q:"O que faz uma ligadura de prolongamento?",options:["Soma a duração de notas da mesma altura","Exige atacar cada nota novamente"],ok:0},
+ {q:"Como usar o metrônomo no início?",options:["Praticar devagar e com regularidade","Colocá-lo na velocidade máxima"],ok:0},
+ {q:"O que significa tocar uma nota ligada?",options:["Manter o som sem um novo ataque","Separá-la com golpes da língua"],ok:0}
+ ],
+ [
+ {q:"Quais notas formam a escala de Dó maior?",options:["Dó–Ré–Mi–Fá–Sol–Lá–Si","Dó–Mi–Fá♯–Sol–Si"],ok:0},
+ {q:"O que é um intervalo?",options:["A distância entre duas alturas","A duração de uma pausa"],ok:0},
+ {q:"O que ajuda a memorizar uma melodia?",options:["Praticá-la por frases","Mudar o andamento o tempo todo"],ok:0},
+ {q:"O que observar ao comparar duas notas?",options:["Se têm alturas diferentes","Apenas o volume"],ok:0},
+ {q:"O que significa subir uma escala?",options:["Percorrer as notas em ordem ascendente","Repetir uma única nota"],ok:0},
+ {q:"O que é fraseado?",options:["Dar forma a uma ideia musical","Tocar todas as notas sem pausa"],ok:0},
+ {q:"Qual é a relação entre tablatura e nota?",options:["Indica o orifício e a direção do ar","Indica somente o ritmo"],ok:0},
+ {q:"O que fazer depois de uma frase musical?",options:["Respeitar uma pausa, quando necessário","Acelerar sempre"],ok:0}
+ ],
+ [
+ {q:"Como começar a aprender técnicas avançadas?",options:["Forçando o ar","Com notas limpas e controladas"],ok:1},
+ {q:"O que a dinâmica permite?",options:["Variar a intensidade expressiva","Mudar o nome das notas"],ok:0},
+ {q:"O que é um acento musical?",options:["Destacar um tempo ou uma nota","Tocar a frase inteira mais rápido"],ok:0},
+ {q:"O que ajuda a preparar o bending?",options:["Controle do ar e relaxamento","Tensão na mandíbula e sopro forte"],ok:0},
+ {q:"O que significa variar uma frase?",options:["Mudar algum elemento mantendo a ideia musical","Tocar sem escutar"],ok:0},
+ {q:"Como praticar notas longas?",options:["Com volume estável e sem tensão","Com a máxima força possível"],ok:0},
+ {q:"Para que serve a escuta ativa?",options:["Comparar e corrigir o que você toca","Evitar prestar atenção ao som"],ok:0},
+ {q:"O que priorizar ao aumentar a velocidade?",options:["Manter a clareza e a regularidade","Aceitar qualquer nota incorreta"],ok:0}
+ ]
+];
 function loadQuizBest(){try{return JSON.parse(localStorage.getItem("akdQuizBest")||"{}")}catch{return{}}}
 let currentLessonQuestions=[];
 function renderLessonCheck(i){
- const pool=lessonChecks[Math.min(3,Math.floor(i/10))];
+ const pool=(lang==="pt"?lessonChecksPt:lessonChecks)[Math.min(3,Math.floor(i/10))];
  const shuffled=pool.map(q=>({q:q.q,options:q.options.map((option,k)=>({option,correct:k===q.ok})).sort(()=>Math.random()-.5)})).sort(()=>Math.random()-.5).slice(0,2);
  currentLessonQuestions=shuffled.map(q=>({q:q.q,options:q.options.map(o=>o.option),ok:q.options.findIndex(o=>o.correct)}));
  const labels=lang==="pt"?{title:"Comprove o que aprendeu",check:"Conferir respostas"}:{title:"Comprobá lo aprendido",check:"Corregir respuestas"};
