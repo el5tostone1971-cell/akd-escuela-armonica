@@ -27,8 +27,8 @@ const portuguese = readLessonBank(
   /ptLessons\.push\(\.\.\.(\[[\s\S]*?\])\);/g
 );
 
-assert.equal(spanish.initial.length, 40, "El banco inicial en español debe conservar sus 40 lecciones originales");
-assert.equal(spanish.appended.length, 30, "Español debe agregar exactamente las lecciones 41 a 70");
+assert.equal(spanish.initial.length, 10, "El bloque inicial en español debe contener 10 lecciones");
+assert.equal(spanish.appended.length, 60, "Español debe conservar las 30 lecciones añadidas anteriormente y agregar las lecciones 41 a 70");
 assert.equal(spanish.all.length, 70, "Español debe tener 70 lecciones en total");
 assert.equal(portuguese.initial.length, 10, "El bloque inicial en portugués debe contener 10 lecciones");
 assert.equal(portuguese.appended.length, 60, "Portugués debe conservar las 60 lecciones agregadas");
@@ -46,7 +46,7 @@ for (const pair of [["español", spanish], ["portugués", portuguese]]) {
   }
 }
 for (const [index, lesson] of spanish.appended.entries()) {
-  assert.equal(lesson.length, 5, "Lección en español " + (index + 41) + ": faltan práctica u objetivo de aprendizaje");
+  assert.equal(lesson.length, 5, "Lección agregada en español " + (index + 11) + ": faltan práctica u objetivo de aprendizaje");
 }
 for (const [index, lesson] of portuguese.appended.entries()) {
   assert.equal(lesson.length, 5, "Lección en portugués " + (index + 11) + ": faltan práctica u objetivo de aprendizaje");
