@@ -22,6 +22,7 @@
 <p class="muted">Para leer una nota, primero identificá la clave y después observá en qué línea o espacio está. La figura del dibujo sirve como orientación visual; las líneas se nombran Mi, Sol, Si, Re, Fa de abajo hacia arriba.</p>
 <h3>2. Las siete notas</h3><div class="grid"><article class="card"><h3>Do · C</h3><p>Primera nota de la escala de Do mayor.</p><div class="tabs">4 ↓</div></article><article class="card"><h3>Re · D</h3><p>Segunda nota.</p><div class="tabs">4 ↑</div></article><article class="card"><h3>Mi · E</h3><p>Tercera nota.</p><div class="tabs">5 ↓</div></article><article class="card"><h3>Fa · F</h3><p>Cuarta nota.</p><div class="tabs">5 ↑</div></article><article class="card"><h3>Sol · G</h3><p>Quinta nota.</p><div class="tabs">6 ↓</div></article><article class="card"><h3>La · A</h3><p>Sexta nota.</p><div class="tabs">6 ↑</div></article><article class="card"><h3>Si · B</h3><p>Séptima nota.</p><div class="tabs">7 ↑</div></article></div>
 <h3>3. Figuras rítmicas y compás</h3><p>En un compás de 4/4, normalmente contamos cuatro pulsos: <b>1, 2, 3, 4</b>. Como referencia inicial, una negra dura un pulso, una blanca dos pulsos y una redonda cuatro pulsos. El tempo, medido en BPM, indica cuántos pulsos hay por minuto.</p><div class="tabs">Negra: 1 pulso · Blanca: 2 pulsos · Redonda: 4 pulsos</div>
+<div class="card rhythm-trainer" id="rhythmTrainer" style="margin:14px 0"><span class="pill" id="rhythmPill">Práctica interactiva</span><h4 id="rhythmTitle">Entrenador de ritmo</h4><p id="rhythmInstructions">Leé la pregunta, elegí una respuesta y comprobá cuánto dura cada figura o silencio.</p><div id="rhythmQuestion" aria-live="polite" style="font-size:1.08rem;font-weight:600;margin:12px 0"></div><div id="rhythmChoices" class="toolbar"></div><p id="rhythmFeedback" role="status" aria-live="polite" class="muted">Elegí una respuesta.</p><p id="rhythmScore" class="muted">Aciertos: 0</p><button type="button" class="primary" id="rhythmNext">Siguiente pregunta</button></div>
 <h3>4. Tonos y semitonos</h3><p>La escala de Do mayor usa Do, Re, Mi, Fa, Sol, La, Si. Entre Mi–Fa y Si–Do hay un semitono natural; entre las demás notas consecutivas de esta escala hay un tono. Esta distancia entre notas ayuda a reconocer melodías y construir escalas.</p>
 <h3>5. Del pentagrama a la armónica</h3><p>La partitura indica la altura y duración de las notas. La tablatura indica qué agujero usar y si soplar o aspirar. Para empezar, asociá cada nota de la escala de Do con su tablatura:</p><div class="tabs">Do 4↓ · Re 4↑ · Mi 5↓ · Fa 5↑ · Sol 6↓ · La 6↑ · Si 7↑</div>
 <h3>6. Silencios, puntillos y articulación</h3>
@@ -439,5 +440,39 @@ $("micStop").onclick=()=>{
  $("micStart").disabled=false;$("micStop").disabled=true;
  $("micResult").className="muted";$("micResult").textContent=lang==="pt"?"Microfone desligado.":"Micrófono apagado."
 };
-renderLessons();renderProgress();translateStatic(false);renderStaffTrainer();if("serviceWorker" in navigator && location.protocol.startsWith("http"))navigator.serviceWorker.register("./service-worker.js").catch(()=>{});
+
+/* Entrenador de figuras, silencios y compás */
+const rhythmItems=[
+ {q:"¿Cuántos pulsos dura una negra en 4/4?",pt:"Quantos tempos dura uma semínima em 4/4?",a:["1 pulso","2 pulsos","4 pulsos"],ap:["1 tempo","2 tempos","4 tempos"],correct:0,why:"La negra dura 1 pulso.",whyPt:"A semínima dura 1 tempo."},
+ {q:"¿Cuántos pulsos dura una blanca?",pt:"Quantos tempos dura uma mínima?",a:["1 pulso","2 pulsos","3 pulsos"],ap:["1 tempo","2 tempos","3 tempos"],correct:1,why:"La blanca dura 2 pulsos.",whyPt:"A mínima dura 2 tempos."},
+ {q:"¿Cuántos pulsos dura una redonda?",pt:"Quantos tempos dura uma semibreve?",a:["2 pulsos","3 pulsos","4 pulsos"],ap:["2 tempos","3 tempos","4 tempos"],correct:2,why:"La redonda dura 4 pulsos.",whyPt:"A semibreve dura 4 tempos."},
+ {q:"En 4/4, ¿cuántos pulsos ocupa una negra seguida de una blanca?",pt:"Em 4/4, quantos tempos ocupam uma semínima seguida de uma mínima?",a:["2 pulsos","3 pulsos","4 pulsos"],ap:["2 tempos","3 tempos","4 tempos"],correct:1,why:"1 + 2 = 3 pulsos.",whyPt:"1 + 2 = 3 tempos."},
+ {q:"Durante un silencio de negra, ¿qué hacés?",pt:"Durante uma pausa de semínima, o que você faz?",a:["Dejo de contar","Sigo contando 1 pulso sin tocar","Toco una nota larga"],ap:["Paro de contar","Continuo contando 1 tempo sem tocar","Toco uma nota longa"],correct:1,why:"El silencio ocupa un pulso: contás, pero no tocás.",whyPt:"A pausa ocupa um tempo: você conta, mas não toca."},
+ {q:"En un compás de 4/4, ¿cuántos pulsos contás?",pt:"Em um compasso 4/4, quantos tempos você conta?",a:["2","3","4"],ap:["2","3","4"],correct:2,why:"El número superior 4 indica cuatro pulsos por compás.",whyPt:"O número superior 4 indica quatro tempos por compasso."},
+ {q:"Una negra con puntillo dura…",pt:"Uma semínima pontuada dura…",a:["1 pulso","1 pulso y medio","2 pulsos"],ap:["1 tempo","1 tempo e meio","2 tempos"],correct:1,why:"El puntillo suma la mitad: 1 + 0,5 = 1,5 pulsos.",whyPt:"O ponto acrescenta metade: 1 + 0,5 = 1,5 tempos."}
+];
+let rhythmIndex=0,rhythmCorrect=0,rhythmAsked=0,rhythmAnswered=false;
+function renderRhythmExercise(){
+ const pt=lang==="pt",item=rhythmItems[rhythmIndex%rhythmItems.length];
+ $("rhythmPill").textContent=pt?"Prática interativa":"Práctica interactiva";
+ $("rhythmTitle").textContent=pt?"Treinador de ritmo":"Entrenador de ritmo";
+ $("rhythmInstructions").textContent=pt?"Leia a pergunta, escolha uma resposta e confira a duração das figuras e pausas.":"Leé la pregunta, elegí una respuesta y comprobá cuánto dura cada figura o silencio.";
+ $("rhythmQuestion").textContent=pt?item.pt:item.q;
+ $("rhythmChoices").innerHTML=(pt?item.ap:item.a).map((answer,i)=>'<button type="button" data-rhythm-answer="'+i+'">'+answer+'</button>').join("");
+ $("rhythmFeedback").textContent=pt?"Escolha uma resposta.":"Elegí una respuesta.";
+ $("rhythmFeedback").className="muted";$("rhythmScore").textContent=(pt?"Acertos: ":"Aciertos: ")+rhythmCorrect+"/"+rhythmAsked;
+ $("rhythmNext").textContent=pt?"Próxima pergunta":"Siguiente pregunta";rhythmAnswered=false;
+}
+$("rhythmChoices").addEventListener("click",e=>{
+ const b=e.target.closest("button[data-rhythm-answer]");if(!b||rhythmAnswered)return;
+ rhythmAnswered=true;const pt=lang==="pt",item=rhythmItems[rhythmIndex%rhythmItems.length],ok=Number(b.dataset.rhythmAnswer)===item.correct;
+ rhythmAsked++;if(ok)rhythmCorrect++;
+ $("rhythmFeedback").textContent=ok?(pt?"Correto! ":"¡Correcto! ")+(pt?item.whyPt:item.why):(pt?"Ainda não. ":"Todavía no. ")+(pt?item.whyPt:item.why);
+ $("rhythmFeedback").className=ok?"success":"muted";
+ $("rhythmScore").textContent=(pt?"Acertos: ":"Aciertos: ")+rhythmCorrect+"/"+rhythmAsked;
+ [...$("rhythmChoices").querySelectorAll("button")].forEach((button,i)=>{button.disabled=true;if(i===item.correct)button.classList.add("correct");if(button===b&&!ok)button.classList.add("incorrect")});
+});
+$("rhythmNext").onclick=()=>{rhythmIndex=(rhythmIndex+1)%rhythmItems.length;renderRhythmExercise()};
+
+renderLessons();renderProgress();translateStatic(false);renderStaffTrainer();renderRhythmExercise();if("serviceWorker" in navigator && location.protocol.startsWith("http"))navigator.serviceWorker.register("./service-worker.js").catch(()=>{});
 </script></body></html>
