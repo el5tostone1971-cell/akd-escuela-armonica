@@ -79,6 +79,13 @@ assert.match(html, /Math\.floor\(i\/10\)/, "El listado debe agrupar cada diez le
 
 assert.match(html, /de 70 lecciones completadas/, "El progreso debe reflejar las 70 lecciones");
 
+assert.match(html, /id="rhythmEarTrainer"/, "Falta el entrenador auditivo de ritmo");
+assert.match(html, /function playEarPattern\(\)/, "Falta la reproducción auditiva de patrones rítmicos");
+assert.match(html, /id="harmonicaRhythmPractice"/, "Falta la práctica rítmica aplicada a la armónica");
+assert.match(html, /id="harmStart"/, "Falta el control para iniciar el metrónomo");
+assert.match(html, /id="harmStop"/, "Falta el control para detener el metrónomo");
+assert.match(html, /earTranslate\(\)/, "Los nuevos ejercicios deben localizarse según el idioma");
+assert.match(html, /\{hits:\[0,1,3\]/, "Los patrones auditivos deben distinguirse entre sí");
 assert.match(html, /id="rhythmTrainer"/, "Falta el entrenador interactivo de ritmo");
 assert.match(html, /const rhythmItems=\[/, "Faltan las preguntas de figuras, silencios y compás");
 assert.match(html, /function renderRhythmExercise\(\)/, "Falta la función que muestra el ejercicio rítmico");
