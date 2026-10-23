@@ -101,6 +101,12 @@ assert.match(html, /const rhythmItems=\[/, "Faltan las preguntas de figuras, sil
 assert.match(html, /function renderRhythmExercise\(\)/, "Falta la función que muestra el ejercicio rítmico");
 assert.match(html, /data-rhythm-answer/, "El entrenador rítmico debe permitir seleccionar respuestas");
 assert.match(html, /addEventListener\("click",e=>\{[\s\S]*?rhythmAsked\+\+/, "El entrenador rítmico debe corregir y contar respuestas");
+assert.match(html, /id="weeklyPlanCard"/, "Falta el plan semanal progresivo");
+assert.match(html, /const weeklyCurriculum=\[/, "Falta el currículo de cuatro semanas");
+assert.match(html, /function renderWeeklyPlan\(\)/, "Falta la función de renderizado del plan semanal");
+assert.match(html, /id="weeklyComplete"/, "Falta el control para registrar entrenamientos semanales");
+assert.match(html, /akdWeeklyDone/, "El progreso semanal debe persistir en este dispositivo");
+assert.match(html, /renderWeeklyPlan\(\);/, "El plan semanal debe inicializarse y actualizarse con o idioma");
 assert.match(html, /id="staffTrainer"/, "Falta el entrenador interactivo de lectura musical");
 assert.match(html, /function renderStaffTrainer\(\)/, "Falta la función que dibuja el entrenador");
 assert.match(html, /function checkStaffAnswer\(/, "El entrenador no corrige las respuestas");
