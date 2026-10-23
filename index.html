@@ -486,6 +486,7 @@ const weeklyCurriculum=[
 let weeklyWeek=1,weeklyDay=(new Date().getDay()+6)%7;
 function weeklyDateKey(){const d=new Date();d.setDate(d.getDate()-((d.getDay()+6)%7));return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
 function weeklyDoneList(){try{return JSON.parse(localStorage.getItem("akdWeeklyDone")||"[]")}catch{return[]}}
+const weeklyTitlesPT=[["Postura e respiração","Notas longas","Orifício 4","Ataque suave","Duas notas","Revisão consciente","Escuta e descanso"],["Pulso estável","Notas e pausas","Mudanças no tempo","Padrão curto","Treino auditivo","Tocar e marcar","Revisão de ritmo"],["Ler duas notas","Sequência de três","Frase curta","Frase com pulso","Repetição de memória","Gravar e escutar","Mini interpretação"],["Contraste suave/forte","Articulação","Pergunta e resposta","Ritmo próprio","Blues básico","Improvisação limitada","Fechamento do ciclo"]];
 function renderWeeklyPlan(){
  const pt=lang==="pt",w=weeklyCurriculum[weeklyWeek-1],days=pt?["Seg","Ter","Qua","Qui","Sex","Sáb","Dom"]:["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"],done=weeklyDoneList();
  $("weeklyTitle").textContent=pt?"Plano semanal progressivo":"Plan semanal progresivo";
@@ -494,7 +495,7 @@ function renderWeeklyPlan(){
  $("weeklyTheme").textContent=(pt?"Semana ":"Semana ")+weeklyWeek+": "+(pt?w.pt:w.es);
  $("weeklyDays").innerHTML=days.map((d,i)=>'<button type="button" data-weekday="'+i+'" aria-pressed="'+(weeklyDay===i)+'">'+d+(done.includes(weeklyDateKey()+"-W"+weeklyWeek+"-D"+i)?" ✓":"")+'</button>').join(" ");
  const task=w.days[weeklyDay];
- $("weeklyDayTitle").textContent=(pt?"Dia ":"Día ")+(weeklyDay+1)+" · "+task[0];
+ $("weeklyDayTitle").textContent=(pt?"Dia ":"Día ")+(weeklyDay+1)+" · "+(pt?weeklyTitlesPT[weeklyWeek-1][weeklyDay]:task[0]);
  $("weeklyTask").textContent=pt?task[2]:task[1];
  $("weeklyGoal").textContent=(pt?"Objetivo: ":"Objetivo: ")+(pt?task[4]:task[3]);
  const key=weeklyDateKey()+"-W"+weeklyWeek+"-D"+weeklyDay,isDone=done.includes(key);
