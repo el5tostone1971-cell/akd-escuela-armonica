@@ -10,7 +10,7 @@ Aplicación web progresiva (PWA) educativa para armónica diatónica Richter en 
 
 ## Incluye actualmente
 
-- 40 lecciones en español y portugués distribuidas en cuatro etapas: fundamentos, desarrollo, técnicas intermedias y nivel avanzado. Las lecciones 11–40 incluyen explicación, práctica guiada y objetivo de aprendizaje.
+- 40 lecciones en español y 40 lecciones en portugués, distribuidas en cuatro etapas: fundamentos, desarrollo, técnicas intermedias y nivel avanzado. Las lecciones 11–40 incluyen explicación, práctica guiada y objetivo de aprendizaje.
 - Mapa de los 10 agujeros de una armónica Richter en Do.
 - Audio de referencia con muestras reales de armónica publicadas bajo licencia CC0; usa cambios de velocidad para cubrir las notas de las lecciones y melodías, con síntesis de respaldo si las muestras no cargan.
 - Control de velocidad de práctica (BPM).
@@ -37,8 +37,8 @@ Esta es una versión web progresiva en desarrollo, instalable desde un navegador
 
 Siguientes hitos de desarrollo:
 1. Validar tablaturas y melodías nota por nota.
-2. Profundizar cada lección con partituras/tablaturas verificadas y evaluación interactiva.
-3. Ampliar las muestras reales con grabaciones individuales para cada agujero y dirección, y después incorporar detección de notas por micrófono.
+2. Auditar la progresión didáctica y reforzar las evaluaciones para comprobar habilidades, no solo finalización.
+3. Probar el entrenador de micrófono con una armónica real y ampliar las muestras con grabaciones individuales por agujero y dirección.
 4. Revisar nota por nota las 40 piezas, validar su fidelidad musical y completar las tablaturas y duraciones.
 5. Empaquetar la experiencia para Android.
 
