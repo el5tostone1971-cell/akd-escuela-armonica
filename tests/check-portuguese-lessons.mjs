@@ -123,6 +123,14 @@ assert.match(html, /Empezá con la primera lección/);
 assert.doesNotMatch(html, /de 40 lecciones completadas|de 40 aulas concluídas/, "No debe quedar el contador antiguo de 40 lecciones");
 
 
+
+assert.match(html, /"Rutina guiada de 10 minutos":"Rotina guiada de 10 minutos"/, "O cartão da rotina precisa estar em português");
+assert.match(html, /"Cómo estudiar este capítulo":"Como estudar este capítulo"/, "O guia de estudo musical precisa estar em português");
+assert.match(html, /"Primero entendé, después tocá":"Primeiro entenda, depois toque"/, "A introdução da teoria precisa estar em português");
+assert.match(html, /"Mini práctica: pensá antes de responder":"Mini prática: pense antes de responder"/, "O exercício de leitura precisa estar em português");
+assert.match(html, /"Nota que vas a tocar":"Nota que você vai tocar"/, "O controle do microfone precisa estar em português");
+assert.match(html, /"El micrófono permanece apagado hasta que lo actives.":"O microfone permanece desligado até você ativá-lo."/);
+
 console.log("OK: 70 lecciones en cada idioma, campos completos en las 30 nuevas lecciones españolas, siete niveles por idioma y cuestionarios localizados.");
 
 assert.match(html, /renderLessons\(\);translateStatic\(pt\);translateHome\(\);renderStaffTrainer\(\)/, "A tela inicial deve ser atualizada ao trocar o idioma");
