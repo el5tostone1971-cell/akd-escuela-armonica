@@ -23,6 +23,8 @@
 <h3>2. Las siete notas</h3><div class="grid"><article class="card"><h3>Do · C</h3><p>Primera nota de la escala de Do mayor.</p><div class="tabs">4 ↓</div></article><article class="card"><h3>Re · D</h3><p>Segunda nota.</p><div class="tabs">4 ↑</div></article><article class="card"><h3>Mi · E</h3><p>Tercera nota.</p><div class="tabs">5 ↓</div></article><article class="card"><h3>Fa · F</h3><p>Cuarta nota.</p><div class="tabs">5 ↑</div></article><article class="card"><h3>Sol · G</h3><p>Quinta nota.</p><div class="tabs">6 ↓</div></article><article class="card"><h3>La · A</h3><p>Sexta nota.</p><div class="tabs">6 ↑</div></article><article class="card"><h3>Si · B</h3><p>Séptima nota.</p><div class="tabs">7 ↑</div></article></div>
 <h3>3. Figuras rítmicas y compás</h3><p>En un compás de 4/4, normalmente contamos cuatro pulsos: <b>1, 2, 3, 4</b>. Como referencia inicial, una negra dura un pulso, una blanca dos pulsos y una redonda cuatro pulsos. El tempo, medido en BPM, indica cuántos pulsos hay por minuto.</p><div class="tabs">Negra: 1 pulso · Blanca: 2 pulsos · Redonda: 4 pulsos</div>
 <div class="card rhythm-trainer" id="rhythmTrainer" style="margin:14px 0"><span class="pill" id="rhythmPill">Práctica interactiva</span><h4 id="rhythmTitle">Entrenador de ritmo</h4><p id="rhythmInstructions">Leé la pregunta, elegí una respuesta y comprobá cuánto dura cada figura o silencio.</p><div id="rhythmQuestion" aria-live="polite" style="font-size:1.08rem;font-weight:600;margin:12px 0"></div><div id="rhythmChoices" class="toolbar"></div><p id="rhythmFeedback" role="status" aria-live="polite" class="muted">Elegí una respuesta.</p><p id="rhythmScore" class="muted">Aciertos: 0</p><button type="button" class="primary" id="rhythmNext">Siguiente pregunta</button></div>
+<div class="card" id="rhythmEarTrainer" style="margin:14px 0"><span class="pill" id="earPill">Escucha y reconoce</span><h4 id="earTitle">Entrenador auditivo de ritmo</h4><p id="earInstructions">Tocá «Escuchar patrón». Oirás cuatro pulsos y notas agudas cuando debés tocar. Después elegí el patrón que escuchaste.</p><button type="button" class="primary" id="earPlay">▶ Escuchar patrón</button><div id="earChoices" class="grid" style="margin-top:12px"><button type="button" data-ear="0">Una nota en cada pulso</button><button type="button" data-ear="1">Notas en los pulsos 1 y 3</button><button type="button" data-ear="2">Notas en 1 y 3; silencio en 2 y 4</button></div><p id="earFeedback" role="status" class="muted">Primero escuchá el patrón.</p><button type="button" id="earNext">Nuevo patrón</button></div>
+<div class="card" id="harmonicaRhythmPractice" style="margin:14px 0"><span class="pill" id="harmPill">Llevalo a la armónica</span><h4 id="harmTitle">Tocá con el pulso</h4><p id="harmIntro">Ajustá el tempo y practicá el patrón. El metrónomo marca los cuatro pulsos; tocá solamente donde indica la secuencia.</p><label for="harmTempo" id="harmTempoLabel">Velocidad: 60 BPM</label><input id="harmTempo" type="range" min="40" max="100" step="5" value="60" style="display:block;width:100%;margin:10px 0"><div id="harmPattern" class="tabs">1: 4↓ · 2: silencio · 3: 4↑ · 4: silencio</div><p id="harmSteps">1. Contá «1, 2, 3, 4». 2. Tocá 4↓ en el pulso 1. 3. En el 2, no toques pero seguí contando. 4. Tocá 4↑ en el 3 y descansá en el 4. Repetí sin apretar ni forzar el aire.</p><button type="button" class="primary" id="harmStart">▶ Iniciar metrónomo</button><button type="button" id="harmStop" disabled>Detener</button><p id="harmStatus" class="muted" role="status">Usá un volumen cómodo. El sonido del metrónomo sale por el dispositivo.</p></div>
 <h3>4. Tonos y semitonos</h3><p>La escala de Do mayor usa Do, Re, Mi, Fa, Sol, La, Si. Entre Mi–Fa y Si–Do hay un semitono natural; entre las demás notas consecutivas de esta escala hay un tono. Esta distancia entre notas ayuda a reconocer melodías y construir escalas.</p>
 <h3>5. Del pentagrama a la armónica</h3><p>La partitura indica la altura y duración de las notas. La tablatura indica qué agujero usar y si soplar o aspirar. Para empezar, asociá cada nota de la escala de Do con su tablatura:</p><div class="tabs">Do 4↓ · Re 4↑ · Mi 5↓ · Fa 5↑ · Sol 6↓ · La 6↑ · Si 7↑</div>
 <h3>6. Silencios, puntillos y articulación</h3>
@@ -474,5 +476,65 @@ $("rhythmChoices").addEventListener("click",e=>{
 });
 $("rhythmNext").onclick=()=>{rhythmIndex=(rhythmIndex+1)%rhythmItems.length;renderRhythmExercise()};
 
-renderLessons();renderProgress();translateStatic(false);renderStaffTrainer();renderRhythmExercise();if("serviceWorker" in navigator && location.protocol.startsWith("http"))navigator.serviceWorker.register("./service-worker.js").catch(()=>{});
+renderLessons();renderProgress();translateStatic(false);renderStaffTrainer();
+/* Entrenador auditivo: pulso de referencia y ataques musicales */
+const earPatterns=[
+ {hits:[0,1,2,3],es:"Una nota en cada pulso",pt:"Uma nota em cada tempo"},
+ {hits:[0,2],es:"Notas en los pulsos 1 y 3",pt:"Notas nos tempos 1 e 3"},
+ {hits:[0,2],es:"Nota en 1 y 3; silencio en 2 y 4",pt:"Nota em 1 e 3; pausa em 2 e 4"}
+];
+let earIndex=1,earAnswer=null,audioCtx=null,harmTimer=null,harmBeat=0;
+function audioReady(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();if(audioCtx.state==="suspended")audioCtx.resume();return audioCtx}
+function toneAt(time,freq,duration,volume){
+ const c=audioReady(),o=c.createOscillator(),g=c.createGain();o.type="sine";o.frequency.value=freq;g.gain.setValueAtTime(.0001,time);g.gain.exponentialRampToValueAtTime(volume,time+.008);g.gain.exponentialRampToValueAtTime(.0001,time+duration);o.connect(g);g.connect(c.destination);o.start(time);o.stop(time+duration+.02)
+}
+function earTranslate(){
+ const pt=lang==="pt";
+ $("earPill").textContent=pt?"Escute e reconheça":"Escucha y reconoce";
+ $("earTitle").textContent=pt?"Treinador auditivo de ritmo":"Entrenador auditivo de ritmo";
+ $("earInstructions").textContent=pt?"Toque em «Ouvir padrão». Você ouvirá quatro tempos e notas agudas nos momentos de tocar. Depois escolha o padrão ouvido.":"Tocá «Escuchar patrón». Oirás cuatro pulsos y notas agudas cuando debés tocar. Después elegí el patrón que escuchaste.";
+ $("earPlay").textContent=pt?"▶ Ouvir padrão":"▶ Escuchar patrón";
+ $("earNext").textContent=pt?"Novo padrão":"Nuevo patrón";
+ $("earFeedback").textContent=pt?"Primeiro, ouça o padrão.":"Primero escuchá el patrón.";
+ const labels=pt?["Uma nota em cada tempo","Notas nos tempos 1 e 3","Tocar em 1 e 3; pausa em 2 e 4"]:["Una nota en cada pulso","Notas en los pulsos 1 y 3","Tocar en 1 y 3; silencio en 2 y 4"];
+ $("earChoices").querySelectorAll("button").forEach((b,i)=>{b.textContent=labels[i];b.disabled=false});
+ $("harmPill").textContent=pt?"Leve para a harmônica":"Llevalo a la armónica";
+ $("harmTitle").textContent=pt?"Toque no pulso":"Tocá con el pulso";
+ $("harmIntro").textContent=pt?"Ajuste o andamento e pratique. O metrônomo marca quatro tempos; toque apenas onde a sequência indica.":"Ajustá el tempo y practicá el patrón. El metrónomo marca los cuatro pulsos; tocá solamente donde indica la secuencia.";
+ $("harmTempoLabel").textContent=(pt?"Velocidade: ":"Velocidad: ")+$("harmTempo").value+" BPM";
+ $("harmPattern").textContent=pt?"1: 4 soprar · 2: pausa · 3: 4 aspirar · 4: pausa":"1: 4↓ · 2: silencio · 3: 4↑ · 4: silencio";
+ $("harmSteps").textContent=pt?"1. Conte «1, 2, 3, 4». 2. Sopre no orifício 4 no tempo 1. 3. No 2, não toque, mas continue contando. 4. Aspire no 3 e descanse no 4. Repita sem forçar o ar.":"1. Contá «1, 2, 3, 4». 2. Tocá 4↓ en el pulso 1. 3. En el 2, no toques pero seguí contando. 4. Tocá 4↑ en el 3 y descansá en el 4. Repetí sin apretar ni forzar el aire.";
+ $("harmStart").textContent=pt?"▶ Iniciar metrônomo":"▶ Iniciar metrónomo";
+ $("harmStop").textContent=pt?"Parar":"Detener";
+ if(!harmTimer)$("harmStatus").textContent=pt?"Pratique em volume confortável.":"Usá un volumen cómodo. El sonido del metrónomo sale por el dispositivo.";
+}
+function playEarPattern(){
+ const c=audioReady(),p=earPatterns[earIndex],now=c.currentTime+.12,beat=.62;
+ for(let i=0;i<4;i++){toneAt(now+i*beat,700,.045,.08);if(p.hits.includes(i))toneAt(now+i*beat,1150,.16,.19)}
+ earAnswer=null;$("earFeedback").textContent=lang==="pt"?"Agora escolha o padrão que você ouviu.":"Ahora elegí el patrón que escuchaste.";
+ $("earChoices").querySelectorAll("button").forEach(b=>b.disabled=false)
+}
+$("earPlay").onclick=playEarPattern;
+$("earNext").onclick=()=>{earIndex=(earIndex+1+Math.floor(Math.random()*2))%earPatterns.length;playEarPattern()};
+$("earChoices").addEventListener("click",e=>{
+ const b=e.target.closest("button[data-ear]");if(!b)return;
+ const picked=Number(b.dataset.ear),pt=lang==="pt";
+ // Pattern 1 and 2 intentionally share attacks, but differ in whether the attacks are short or held.
+ // Make the third option a distinct syncopated/rest pattern in the actual audio.
+ const correct=earIndex===2?2:earIndex;
+ const ok=picked===correct;
+ $("earFeedback").textContent=ok?(pt?"Correto! Você reconheceu o padrão.":"¡Correcto! Reconociste el patrón."):(pt?"Ainda não. Ouça novamente e conte os quatro tempos.":"Todavía no. Escuchá otra vez y contá los cuatro pulsos.");
+ $("earChoices").querySelectorAll("button").forEach(x=>x.disabled=true);
+});
+$("harmTempo").oninput=()=>{$("harmTempoLabel").textContent=(lang==="pt"?"Velocidade: ":"Velocidad: ")+$("harmTempo").value+" BPM"};
+function harmTick(){
+ if(!harmTimer)return;const c=audioReady(),t=c.currentTime+.01;
+ toneAt(t,harmBeat%4===0?880:620,.055,.12);
+ $("harmStatus").textContent=(lang==="pt"?"Tempo ":"Pulso ")+(harmBeat%4+1)+" / 4";
+ harmBeat++;harmTimer=setTimeout(harmTick,60000/Number($("harmTempo").value))
+}
+$("harmStart").onclick=()=>{if(harmTimer)return;audioReady();harmBeat=0;$("harmStart").disabled=true;$("harmStop").disabled=false;harmTick()};
+$("harmStop").onclick=()=>{if(harmTimer)clearTimeout(harmTimer);harmTimer=null;$("harmStart").disabled=false;$("harmStop").disabled=true;$("harmStatus").textContent=lang==="pt"?"Metrônomo parado.":"Metrónomo detenido."};
+
+renderRhythmExercise();earTranslate();if("serviceWorker" in navigator && location.protocol.startsWith("http"))navigator.serviceWorker.register("./service-worker.js").catch(()=>{});
 </script></body></html>
