@@ -458,7 +458,7 @@ const weeklyCurriculum=[
  ]}
 ];
 let weeklyWeek=1,weeklyDay=(new Date().getDay()+6)%7;
-function weeklyDateKey(){const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function weeklyDateKey(){const d=new Date();d.setDate(d.getDate()-((d.getDay()+6)%7));return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
 function weeklyDoneList(){try{return JSON.parse(localStorage.getItem("akdWeeklyDone")||"[]")}catch{return[]}}
 function renderWeeklyPlan(){
  const pt=lang==="pt",w=weeklyCurriculum[weeklyWeek-1],days=pt?["Seg","Ter","Qua","Qui","Sex","Sáb","Dom"]:["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"],done=weeklyDoneList();
@@ -473,8 +473,8 @@ function renderWeeklyPlan(){
  $("weeklyGoal").textContent=(pt?"Objetivo: ":"Objetivo: ")+(pt?task[4]:task[3]);
  const key=weeklyDateKey()+"-W"+weeklyWeek+"-D"+weeklyDay,isDone=done.includes(key);
  $("weeklyComplete").textContent=isDone?(pt?"✓ Treino concluído hoje":"✓ Entrenamiento completado hoy"):(pt?"Marcar este treino como concluído":"Marcar este entrenamiento como hecho");
- $("weeklyStatus").textContent=isDone?(pt?"Registrado para hoje.":"Registrado para hoy."):"";
- $("weeklyProgress").textContent=done.filter(k=>k.includes(weeklyDateKey()+"-W"+weeklyWeek+"-")).length+(pt?" de 7 dias registrados hoje nesta semana.":" de 7 días registrados hoy en esta semana.");
+ $("weeklyStatus").textContent=isDone?(pt?"Registrado para hoje.":"Registrado esta semana."):"";
+ $("weeklyProgress").textContent=done.filter(k=>k.includes(weeklyDateKey()+"-W"+weeklyWeek+"-")).length+(pt?" de 7 dias concluídos nesta semana.":" de 7 días completados esta semana.");
 }
 $("weeklyWeeks").addEventListener("click",e=>{const b=e.target.closest("[data-week]");if(!b)return;weeklyWeek=Number(b.dataset.week);renderWeeklyPlan()});
 $("weeklyDays").addEventListener("click",e=>{const b=e.target.closest("[data-weekday]");if(!b)return;weeklyDay=Number(b.dataset.weekday);renderWeeklyPlan()});
