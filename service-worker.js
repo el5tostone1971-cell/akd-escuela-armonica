@@ -1,4 +1,4 @@
-const CACHE = "akd-armonica-v50";
+const CACHE = "akd-armonica-v51";
 const FILES = ["./", "./index.html", "./manifest.webmanifest"];
 
 self.addEventListener("install", event => {
